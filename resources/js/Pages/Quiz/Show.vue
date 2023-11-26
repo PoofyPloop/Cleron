@@ -95,15 +95,13 @@ const closeModal = () => {
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">
                         <div class="flex items-center justify-between">
-                            <h2 class="title-h2">Question</h2>
-                        </div>
-
-                        <div class="pt-4" v-if="$page.props.quiz">
-                            <p>{{ $page.props.quiz.title }}</p>
+                            <div class="pt-4" v-if="$page.props.quiz">
+                                <h2 class="title-h2">{{ $page.props.quiz.title }}</h2>
+                            </div>
                         </div>
 
                         <div class="mt-4">
-                            <p class="text-xs pb-2">Questions</p>
+                            <p class="pb-2">Questions</p>
                             <div class="bg-gray-200 rounded-md p-3 flex items-center justify-between mt-4" v-for="question in $page.props.quiz.questions" :key="question.id">
                                 <p required>{{ question.text }}</p>
 
