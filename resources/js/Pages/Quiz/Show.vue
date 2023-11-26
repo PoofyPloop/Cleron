@@ -105,7 +105,7 @@ const closeModal = () => {
                         <div class="mt-4">
                             <p class="text-xs pb-2">Questions</p>
                             <div class="bg-gray-200 rounded-md p-3 flex items-center justify-between mt-4" v-for="question in $page.props.quiz.questions" :key="question.id">
-                                <p>{{ question.text }}</p>
+                                <p required>{{ question.text }}</p>
 
                                 <DangerButton @click="confirmQuestionDeletion">Delete Question</DangerButton>
 
@@ -159,13 +159,13 @@ const closeModal = () => {
                                     </label>
 
                                     <label>
-                                        <input type="radio" ref="typeInput" v-model="form.types[index]" value="mcq">
+                                        <input checked type="radio" ref="typeInput" v-model="form.types[index]" value="mcq">
                                         Multiple Choice
                                     </label>
 
                                     <div class="flex items-center space-x-2">
                                         <p>Points</p>
-                                        <input type="number" ref="scoreInput" class="border-gray-300 focus:border-primary-500 focus:ring-primary-500 rounded-md shadow-sm w-full mt-1" v-model="form.scores[index]">
+                                        <input type="number" ref="scoreInput" class="border-gray-300 focus:border-primary-500 focus:ring-primary-500 rounded-md shadow-sm w-full mt-1" v-model="form.scores[index]" min="1">
                                     </div>
                                 </div>
 
@@ -180,6 +180,7 @@ const closeModal = () => {
                                                 v-model="form.options1[index]"
                                                 type="text"
                                                 class="mt-1 block w-full"
+                                                required
                                             />
 
                                             <InputError :message="form.errors.option1" class="mt-2" />
@@ -194,6 +195,7 @@ const closeModal = () => {
                                                 v-model="form.options2[index]"
                                                 type="text"
                                                 class="mt-1 block w-full"
+                                                required
                                             />
 
                                             <InputError :message="form.errors.option2" class="mt-2" />
@@ -232,7 +234,7 @@ const closeModal = () => {
                                 <div>
                                     <InputLabel for="answer" value="Answer" />
 
-                                    <select ref="answerInput" v-model="form.answers[index]">
+                                    <select required ref="answerInput" v-model="form.answers[index]">
                                         <option value="option1" selected>
                                             Option 1
                                         </option>

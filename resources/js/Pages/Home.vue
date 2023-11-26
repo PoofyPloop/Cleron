@@ -66,7 +66,7 @@ import { Head, Link } from '@inertiajs/vue3';
                         </div>
                     </div>
                     
-                    <p class="text-2xl font-semibold text-gray-600 pb-2 pt-6">Statistics</p>
+                    <p class="text-2xl font-semibold text-gray-600 pb-2 pt-10">Statistics</p>
 
                     <div class="grid grid-cols-12 gap-6 pt-6">
                         <div class="col-span-6">
@@ -105,7 +105,7 @@ import { Head, Link } from '@inertiajs/vue3';
                 </div>
 
                 <div class="pt-10">
-                    <p class="text-gray-600 pb-4">Reports</p>
+                    <p class="text-2xl font-semibold text-gray-600 pb-2 pt-6">Reports</p>
 
                     <div class="grid grid-cols-12 gap-6">
                         <div class="col-span-12">
