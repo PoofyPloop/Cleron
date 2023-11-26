@@ -17,7 +17,7 @@ import { Head, Link } from '@inertiajs/vue3';
                     <div class="p-6 text-gray-900">
                         <p class="pb-6">You have scored {{ $page.props.score }} / {{ $page.props.totalScore }}</p>
 
-                        <Link :href="`/quiz/test/${$page.props.quiz.id}`" class="primary-button">Take Re-Test</Link>
+                        <Link :href="`/quiz/test/${$page.props.quiz.id}`" class="primary-button">Retake Test</Link>
                     </div>
                 </div>
             </div>

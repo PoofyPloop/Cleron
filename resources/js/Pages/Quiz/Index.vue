@@ -58,7 +58,7 @@ const closeModal = () => {
 
                                 <a :href="`/quiz/${quiz.id}/edit`" class="primary-button">Edit Quiz</a>
 
-                                <DangerButton @click="confirmQuizDeletion">Delete Account</DangerButton>
+                                <DangerButton @click="confirmQuizDeletion">Delete Quiz</DangerButton>
 
                                 <Modal :show="confirmingQuizDeletion" @close="closeModal">
                                     <div class="p-6">
