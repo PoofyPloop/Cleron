@@ -13,7 +13,7 @@ import { Head, Link } from '@inertiajs/vue3';
 
         <div class="py-12">
             <div class="max-w-4xl mx-auto sm:px-6 lg:px-8" v-if="$page.props.auth.user.role == 1">
-                <p class="text-gray-600 pb-4">Quiz Statistics</p>
+                <p class="text-2xl font-semibold text-gray-600 pb-2 pt-10">Statistics</p>
 
                 <div class="grid grid-cols-12 gap-6">
                     <div class="col-span-6">

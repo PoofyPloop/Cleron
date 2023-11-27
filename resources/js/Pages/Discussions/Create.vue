@@ -50,7 +50,7 @@ const storeDiscussion = () => {
                     <div class="p-6 text-gray-900">
                         <div class="flex items-center justify-between">
                             <h2 class="title-h2">Create Discussion</h2>
-                            <Link href="/quiz" class="text-sm text-primary-500">Back to all discussions</Link>
+                            <Link href="/discussions" class="text-sm text-primary-500">Back to all discussions</Link>
                         </div>
 
                         <div>
@@ -83,7 +83,7 @@ const storeDiscussion = () => {
                                 </div>
 
                                 <div class="flex items-center gap-4">
-                                    <PrimaryButton :disabled="form.processing">Save</PrimaryButton>
+                                    <PrimaryButton :disabled="form.processing">Post</PrimaryButton>
 
                                     <Transition
                                         enter-active-class="transition ease-in-out"
