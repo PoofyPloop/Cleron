@@ -19,15 +19,16 @@ class PagesController extends Controller
     {
         $search = request('search');
         $type = request('type');
+        $user_id = auth()->user()->id;
 
-        $quizzes = Quiz::where('user_id', auth()->user()->id)
+        $quizzes = Quiz::where('user_id', $user_id)
         ->orderBy('id', 'desc')
         ->when($search, function ($query) use ($search){
             $query->where('title', 'like', '%' . $search . '%');
         })
         ->get();
 
-        $discussions = Discussion::where('user_id', auth()->user()->id)
+        $discussions = Discussion::where('user_id', $user_id)
         ->orderBy('id', 'desc')
         ->get();
 
