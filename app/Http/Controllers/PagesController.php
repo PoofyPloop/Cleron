@@ -17,37 +17,24 @@ class PagesController extends Controller
 {
     public function home()
     {
-        // teacher
-        if(auth()->user()->role == '2') {
-            $quizzes = Quiz::where('user_id', auth()->user()->id)
-            ->orderBy('id', 'desc')
-            ->get();
+        $search = request('search');
+        $type = request('type');
 
-            $discussions = Discussion::where('user_id', auth()->user()->id)
-            ->orderBy('id', 'desc')
-            ->get();
+        $quizzes = Quiz::where('user_id', auth()->user()->id)
+        ->orderBy('id', 'desc')
+        ->when($search, function ($query) use ($search){
+            $query->where('title', 'like', '%' . $search . '%');
+        })
+        ->get();
 
-            return Inertia::render('Home', [
-                'quizzes' => $quizzes,
-                'discussions' => $discussions
-            ]);
-        } 
+        $discussions = Discussion::where('user_id', auth()->user()->id)
+        ->orderBy('id', 'desc')
+        ->get();
 
-        // student
-        if(auth()->user()->role == 1) {
-            $scores = Scores::where('user_id', auth()->user()->id)
-            ->orderBy('id', 'desc')
-            ->get();
-
-            $comments = DiscussionComment::where('user_id', auth()->user()->id)
-            ->orderBy('id', 'desc')
-            ->get();
-
-            return Inertia::render('Home', [
-                'scores' => $scores,
-                'comments' => $comments
-            ]);
-        } 
+        return Inertia::render('Home', [
+            'quizzes' => $quizzes,
+            'discussions' => $discussions
+        ]);
     }
 
     public function subjects()

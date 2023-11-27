@@ -1,13 +1,22 @@
 <script setup>
-import { ref } from 'vue';
+import { ref,watch } from 'vue';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
-import { Link } from '@inertiajs/vue3';
+import { Link, router } from '@inertiajs/vue3';
 
 const showingNavigationDropdown = ref(false);
+
+const searchOptions = ref({
+    search: "",
+    type: "quiz",
+});
+
+watch(() => searchOptions.value, async (newSearch, oldSearch) => {
+    router.get(route("dashboard"), newSearch)
+}, {deep: true});
 </script>
 
 <template>
@@ -44,13 +53,14 @@ const showingNavigationDropdown = ref(false);
                         </div>
 
                         <form class="items-center hidden sm:inline-flex">   
-                            <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">
+                            <label for="search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">
                                 Search
                             </label>
+
                             <div class="flex items-center">
-                                <input type="search" id="default-search" class="block w-80 p-2.5 text-sm text-gray-900 border border-gray-300 rounded-l-lg focus:ring-primary-500 focus:border-primary-500 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Search Questions, Discussions..." required>
+                                <input type="search" id="search" class="block w-80 p-2.5 text-sm text-gray-900 border border-gray-300 rounded-l-lg focus:ring-primary-500 focus:border-primary-500" placeholder="Search Questions, Discussions..."  v-model="searchOptions.search" required>
                                 
-                                <button type="submit" class="text-white border border-black bg-primary-400 hover:bg-primary-500 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-r-lg text-sm px-4 py-3">
+                                <button type="submit" class="text-white border border-gray-400 bg-primary-400 hover:bg-primary-500 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-r-lg text-sm px-4 py-3">
                                     <svg class="w-4 h-4 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
                                     </svg>
