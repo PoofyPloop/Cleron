@@ -6,9 +6,24 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 import {useForm, usePage} from '@inertiajs/vue3';
 
-    const props = defineProps(['question'])
-    const form = useForm(props.question);
+    const props = defineProps(['question']); // Defines the props to access external properties
+    const form = useForm(props.question); // Initializes form with question data
 
+    /**
+     * Saves question
+     */
+    const saveQuestion = () => {
+    form.post(route('quizzes.questions.store', { quiz: usePage().props.quiz.id }), {
+        preserveState: true,
+        preserveScroll: true,
+        only: ['quiz'],
+    });
+};
+
+    /**
+     * Deletes question of choice.
+     * @returns {void}
+     */
     const deleteQuestion = () => {
         form.delete(route('quizzes.questions.destroy',  {quiz: usePage().props.quiz.id, question: props.question.id}), {
             preserveState: true,
@@ -20,7 +35,7 @@ import {useForm, usePage} from '@inertiajs/vue3';
 </script>
 
 <template>
-    <div class="pt-4 mb-6 space-y-4">
+    <div class="space-y-4">
         <div>
             <InputLabel for="question" value="Question" />
 
@@ -89,8 +104,21 @@ import {useForm, usePage} from '@inertiajs/vue3';
 
             <InputError :message="form.errors.category" class="mt-2" />
         </div>
-
-        <PrimaryButton :disabled="form.processing">Save</PrimaryButton>
+        
+        <div>
+            <InputLabel for="answer" value="Answer"/>
+            
+            <div class="grid grid-cols-2 gap-4"> 
+                <input class="border-gray-300 focus:border-primary-500 focus:ring-primary-500 rounded-md shadow-sm">
+                <input class="border-gray-300 focus:border-primary-500 focus:ring-primary-500 rounded-md shadow-sm">
+                <input class="border-gray-300 focus:border-primary-500 focus:ring-primary-500 rounded-md shadow-sm">
+                <input class="border-gray-300 focus:border-primary-500 focus:ring-primary-500 rounded-md shadow-sm">
+            </div>
+            
+            <InputError :message="form.errors.category" class="mt-2" />
+        </div>
+        
+        <PrimaryButton :disabled="form.processing" @click="saveQuestion">Save</PrimaryButton>
         <DangerButton class="ml-2" @click="deleteQuestion">Delete</DangerButton>
     </div>
 </template>

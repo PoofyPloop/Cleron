@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Answer;
+use App\Models\Quiz;
+use App\Models\Question;
 use Illuminate\Http\Request;
+use Inertia\Inertia;;
 
 class AnswerController extends Controller
 {
@@ -22,7 +25,9 @@ class AnswerController extends Controller
      */
     public function create(Quiz $quiz, Question $question)
     {
-        //
+        dd($quiz->questions);
+        dd($question->answers);
+        return Intertia::render("");
     }
 
     /**
@@ -30,7 +35,8 @@ class AnswerController extends Controller
      */
     public function store(Request $request, Quiz $quiz, Question $question)
     {
-        //
+        $question->fill($request->all());
+        $question->save();
     }
 
     /**
@@ -38,7 +44,9 @@ class AnswerController extends Controller
      */
     public function show(Quiz $quiz, Question $question, Answer $answer)
     {
-        //
+        dd($quiz->questions);
+        dd($question->answers);
+        return Intertia::render("");
     }
 
     /**
@@ -54,7 +62,8 @@ class AnswerController extends Controller
      */
     public function update(Request $request, Quiz $quiz, Question $question, Answer $answer)
     {
-        //
+        $question->fill($request->all());
+        $question->save();
     }
 
     /**

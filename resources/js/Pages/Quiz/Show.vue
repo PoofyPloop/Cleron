@@ -33,7 +33,7 @@ const confirmQuestionDeletion = () => {
 };
 
 const deleteQuestion = (id) => {
-    form.delete(route('question.destroy', id), {
+    form.delete(route('quizzes.questions.destroy', id), {
         preserveScroll: true,
         onSuccess: () => closeModal(),
         onError: () => {},
@@ -66,10 +66,13 @@ const closeModal = () => {
 
                         <div class="mt-4">
                             <p class="pb-2">Questions</p>
-                            <div class="bg-gray-200 rounded-md p-3 flex items-center justify-between mt-4" v-for="question in $page.props.quiz.questions" :key="question.id">
-                                <p required>{{ question.text }}</p>
-
-                                <DangerButton @click="confirmQuestionDeletion">Delete Question</DangerButton>
+                            <div class="bg-gray-200 rounded-md p-3 flex items-center mt-4" v-for="question in $page.props.quiz.questions" :key="question.id">
+                                
+                                <div class="grid grid-rows-1 grid-cols-10 flex items-center ">
+                                    <p required class="mx-2 col-start col-span-8">Question:: {{ question.text }}</p>
+                                    <SecondaryButton class="mx-2 col-end-10">Edit</SecondaryButton>
+                                    <DangerButton class="col-end-11 flex justify-center" @click="confirmQuestionDeletion">Delete</DangerButton>
+                                </div>
 
                                 <Modal :show="confirmingQuestionDeletion" @close="closeModal">
                                     <div class="p-6">
@@ -82,11 +85,11 @@ const closeModal = () => {
 
                                             <DangerButton
                                                 class="ml-3"
-                                                :class="{ 'opacity-25': form2.processing }"
-                                                :disabled="form2.processing"
-                                                @click="deleteQuestion(question.id)"
+                                                :class="{ 'opacity-25': form.processing }"
+                                                :disabled="form.processing"
+                                                @click="deleteQuestion(questions.id)"
                                             >
-                                                Delete Question
+                                                Delete
                                             </DangerButton>
                                         </div>
                                     </div>
@@ -97,49 +100,51 @@ const closeModal = () => {
                 </div>
 
                 <div class="mt-6 space-y-6">
-                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mt-6" v-for="question in questions" :key="question">
-                        <div class="p-6 text-gray-900">
-                            <div class="flex items-center justify-between">
-                                <h2 class="title-h2">Add Question</h2>
+                    <div class="flex items-center justify-between">
+                        <h2 class="title-h2 pl-6">Add Questions</h2>
+                    </div>
+                    <div class="mt-2">
+                        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mt-6" v-for="question in questions" :key="question">
+                            <div class="p-6 text-gray-900">
+                                <QuestionCard :question="question"></QuestionCard>
                             </div>
-                            <QuestionCard :question="question"></QuestionCard>
                         </div>
-                    </div>
 
-                    <div class="flex items-center gap-4">
-                        <button class="primary-button" type="button" @click="addQuestion">Add Question</button>
-                    </div>
+                        <div class="flex items-center gap-4">
+                            <button class="primary-button" type="button" @click="addQuestion">Add Question</button>
+                        </div>
 
-                    <div>
-                        <Transition
-                            enter-active-class="transition ease-in-out"
-                            enter-from-class="opacity-0"
-                            leave-active-class="transition ease-in-out"
-                            leave-to-class="opacity-0"
-                        >
-                            <div class="rounded-md bg-green-50 p-4" v-if="form.recentlySuccessful">
-                                <div class="flex">
-                                    <div class="flex-shrink-0">
-                                        <svg class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
-                                        </svg>
-                                    </div>
-                                    <div class="ml-3">
-                                        <p class="text-sm font-medium text-green-800">Saved</p>
-                                    </div>
-                                    <div class="ml-auto pl-3">
-                                        <div class="-mx-1.5 -my-1.5">
-                                            <button type="button" class="inline-flex rounded-md bg-green-50 p-1.5 text-green-500 hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 focus:ring-offset-green-50">
-                                                <span class="sr-only">Dismiss</span>
-                                                <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                                    <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
-                                                </svg>
-                                            </button>
+                        <div>
+                            <Transition
+                                enter-active-class="transition ease-in-out"
+                                enter-from-class="opacity-0"
+                                leave-active-class="transition ease-in-out"
+                                leave-to-class="opacity-0"
+                            >
+                                <div class="rounded-md bg-green-50 p-4" v-if="form.recentlySuccessful">
+                                    <div class="flex">
+                                        <div class="flex-shrink-0">
+                                            <svg class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
+                                            </svg>
+                                        </div>
+                                        <div class="ml-3">
+                                            <p class="text-sm font-medium text-green-800">Saved</p>
+                                        </div>
+                                        <div class="ml-auto pl-3">
+                                            <div class="-mx-1.5 -my-1.5">
+                                                <button type="button" class="inline-flex rounded-md bg-green-50 p-1.5 text-green-500 hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 focus:ring-offset-green-50">
+                                                    <span class="sr-only">Dismiss</span>
+                                                    <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                        <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+                                                    </svg>
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </Transition>
+                            </Transition>
+                        </div>
                     </div>
                 </div>
             </div>

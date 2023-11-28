@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Quiz;
 use App\Models\Question;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class QuestionController extends Controller
 {
@@ -22,7 +23,7 @@ class QuestionController extends Controller
      */
     public function create(Quiz $quiz)
     {
-        //
+        return Intertia::render("Quiz/Create", ['quiz' => $quiz]);
     }
 
     /**
@@ -48,7 +49,7 @@ class QuestionController extends Controller
      */
     public function show(Quiz $quiz, Question $question)
     {
-        //
+        return Intertia::render("", []);
     }
 
     /**
@@ -64,7 +65,9 @@ class QuestionController extends Controller
      */
     public function update(Request $request, Quiz $quiz, Question $question)
     {
-        //
+        $validated = $request -> validate([]);
+        $quiz->questions()->update($validated, $question->id);
+        return redirect()->back();
     }
 
     /**

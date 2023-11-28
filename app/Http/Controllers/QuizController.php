@@ -2,15 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Inertia\Inertia;
-
 use App\Models\Category;
 use App\Models\Subject;
 use App\Models\Quiz;
-use App\Models\Question;
-use App\Models\Answer;
-use App\Models\Scores;
+use App\Models\Points;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class QuizController extends Controller
 {
@@ -46,7 +43,7 @@ class QuizController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'title' => ['required', 'max:200'],
+            'title' => ['required', 'max:50'],
             'subject' => ['required'],
             'category' => ['required'],
         ]);
@@ -57,7 +54,7 @@ class QuizController extends Controller
             'subject_id' => $validated['subject'],
             'category_id' => $validated['category']
         ]);
-  
+
         return back()->with([
             'data' => 'Quiz created',
         ]);
@@ -82,7 +79,8 @@ class QuizController extends Controller
     {
         $categories = Category::all();
         $subjects = Subject::all();
-        $quiz = Quiz::where('id', $id)->with('questions.answer')->first();
+        // $quiz = Quiz::where('id', $id)->with('questions.answer')->first();
+        $quiz = Quiz::findOrFail($id);
 
         return Inertia::render('Quiz', [
             'categories' => $categories,
@@ -93,30 +91,38 @@ class QuizController extends Controller
 
     public function result(Request $request, string $id)
     {
-        $quiz = Quiz::where('id', $id)->with('questions.answer')->first();
-        $score = 0;
-        $totalScore = 0;
-        $i = 0;
+        //find quiz by id
+        // $quiz = Quiz::where('id', $id)->with('questions.answer')->first();
+        $quiz = Quiz::findOrFail($id);
+        
+        // initializing variables
+        $points = 0;
+        $totalPoints = 0;
 
-        foreach($quiz->questions as $ques) {
-            if($ques->answer->answer == $request->answers[$i]) {
-                $score = $score + $ques->score;
+        // loop through questions
+        foreach($quiz->questions as $i => $question) {
+            // compare user answer with correct answer
+            if($question->answer->answer == $request->answers[$i]) {
+                $points += $question->points;
             }
-            $totalScore = $totalScore + $ques->score;
+
+            // Sums up total points
+            $totalPoints += $question->points;
             $i++;
         }
 
-        // store it into scores DB
-        Scores::create([
+        // stores the points in the database
+        Points::create([
             'user_id' => auth()->user()->id,
             'quiz_id' => $id,
-            'score' => $totalScore
+            'points' => $totalPoints
         ]);
         
+        //returns the data
         return Inertia::render('Quiz/Result', [
             'quiz' => $quiz,
-            'score' => $score,
-            'totalScore' => $totalScore
+            'points' => $points,
+            'totalPoints' => $totalPoints
         ]);
     }
 
@@ -127,7 +133,8 @@ class QuizController extends Controller
     {
         $categories = Category::all();
         $subjects = Subject::all();
-        $quiz = Quiz::where('id', $id)->with('questions.answer')->first();
+        // $quiz = Quiz::where('id', $id)->with('questions.answer')->first();
+        $quiz = Quiz::findOrFail($id);
 
         return Inertia::render('Quiz/Edit', [
             'categories' => $categories,
@@ -142,7 +149,7 @@ class QuizController extends Controller
     public function update(Request $request, string $id)
     {
         $validated = $request->validate([
-            'title' => ['required', 'max:200'],
+            'title' => ['required', 'max:50'],
             'subject' => ['required'],
             'category' => ['required'],
         ]);
@@ -158,165 +165,6 @@ class QuizController extends Controller
         ]);
     }
 
-    public function demo(Request $request)
-    {
-        $math = Subject::where('title', 'Math')->first();
-        $algebra = Category::where('title', 'Algebra')->first();
-
-        // create quiz 1
-        $quiz1 = Quiz::create([
-            'user_id' => auth()->user()->id,
-            'title' => 'Algebra 1 Test',
-            'subject_id' => $math->id,
-            'category_id' => $algebra->id
-        ]);
-
-        // add quiz 1 question and answers
-        $question = Question::create([
-            'quiz_id' => $quiz1->id,
-            'text' => 'What is the solution to the equation 2x+5=15?',
-            'type' => 'mcq',
-            'score' => 1
-        ]);
-        Answer::create([
-            'question_id' => $question->id,
-            'choices' => json_encode([
-                'x=5', 'x=10', 'x=7', 'x=8'
-            ]),
-            'answer' => 'x=5'
-        ]);
-
-        $question2 = Question::create([
-            'quiz_id' => $quiz1->id,
-            'text' => 'Simplify the expression 3x^2+2x−7 when x=2.',
-            'type' => 'mcq',
-            'score' => 1
-        ]);
-        Answer::create([
-            'question_id' => $question2->id,
-            'choices' => json_encode([
-                '5', '12', '9', '17'
-            ]),
-            'answer' => '9'
-        ]);
-
-        $question3 = Question::create([
-            'quiz_id' => $quiz1->id,
-            'text' => 'Which of the following is the equation of a line in slope-intercept form?',
-            'type' => 'mcq',
-            'score' => 1
-        ]);
-        Answer::create([
-            'question_id' => $question3->id,
-            'choices' => json_encode([
-                '2x-3y=7', 'y=4x+2', '3x+2y=8', 'x-5y=10'
-            ]),
-            'answer' => 'y=4x+2'
-        ]);
-
-        $question4 = Question::create([
-            'quiz_id' => $quiz1->id,
-            'text' => 'If 3(x−4)=21, what is the value of x?',
-            'type' => 'mcq',
-            'score' => 1
-        ]);
-        Answer::create([
-            'question_id' => $question4->id,
-            'choices' => json_encode([
-                '5', '7', '9', '11'
-            ]),
-            'answer' => '11'
-        ]);
-
-        $question5 = Question::create([
-            'quiz_id' => $quiz1->id,
-            'text' => 'Solve for y in the equation 2y+3=7.',
-            'type' => 'mcq',
-            'score' => 1
-        ]);
-        Answer::create([
-            'question_id' => $question5->id,
-            'choices' => json_encode([
-                'y=2', 'y=13', 'y=4', 'y=5'
-            ]),
-            'answer' => 'y=2'
-        ]);
-
-        $question6 = Question::create([
-            'quiz_id' => $quiz1->id,
-            'text' => 'In the equation 5x+8=2x-4, x=4.',
-            'type' => 'mcq',
-            'score' => 1
-        ]);
-        Answer::create([
-            'question_id' => $question6->id,
-            'choices' => json_encode([
-                'True', 'False'
-            ]),
-            'answer' => 'False'
-        ]);
-
-        $question7 = Question::create([
-            'quiz_id' => $quiz1->id,
-            'text' => 'The quadratic equation x^2+4x−5=0 has two real roots.',
-            'type' => 'mcq',
-            'score' => 1
-        ]);
-        Answer::create([
-            'question_id' => $question7->id,
-            'choices' => json_encode([
-                'True', 'False'
-            ]),
-            'answer' => 'True'
-        ]);
-
-        $question8 = Question::create([
-            'quiz_id' => $quiz1->id,
-            'text' => 'The slope of a horizontal line is zero.',
-            'type' => 'mcq',
-            'score' => 1
-        ]);
-        Answer::create([
-            'question_id' => $question8->id,
-            'choices' => json_encode([
-                'True', 'False'
-            ]),
-            'answer' => 'True'
-        ]);
-
-        $question9 = Question::create([
-            'quiz_id' => $quiz1->id,
-            'text' => 'The absolute value of any real number is always positive.',
-            'type' => 'mcq',
-            'score' => 1
-        ]);
-        Answer::create([
-            'question_id' => $question9->id,
-            'choices' => json_encode([
-                'True', 'False'
-            ]),
-            'answer' => 'True'
-        ]);
-
-        $question10 = Question::create([
-            'quiz_id' => $quiz1->id,
-            'text' => 'The solution to the equation 3(2x+1)=2(3x−4) is x=−5.',
-            'type' => 'mcq',
-            'score' => 1
-        ]);
-        Answer::create([
-            'question_id' => $question10->id,
-            'choices' => json_encode([
-                'True', 'False'
-            ]),
-            'answer' => 'False'
-        ]);
-  
-        return back()->with([
-            'data' => 'Quiz updated',
-        ]);
-    }
-
     /**
      * Remove the specified resource from storage.
      */
@@ -325,7 +173,7 @@ class QuizController extends Controller
         Quiz::where('id', $id)->delete();
 
         return back()->with([
-            'data' => 'Quiz created',
+            'data' => 'Quiz deleted',
         ]);
     }
 }
