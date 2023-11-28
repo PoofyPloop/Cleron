@@ -16,14 +16,28 @@ class Answer extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'value',
         'question_id',
-        'text',
-        'choices',
-        'answer'
+        'user_id',
+    ];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     public function question(): BelongsTo
     {
         return $this->belongsTo(Question::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }

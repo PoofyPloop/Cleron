@@ -18,7 +18,6 @@ import { Head, Link } from '@inertiajs/vue3';
                         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                             <div class="p-6 text-gray-900">
                                 <p class="pb-6">{{ sub.title }}</p>
-
                                 <div class="grid grid-cols-2 gap-6">
                                     <div class="quizzes flex justify-between border rounded border-gray-200 p-3 mb-6" v-for="quiz in sub.quizzes" :key="quiz.id">
                                         <div>
@@ -30,9 +29,9 @@ import { Head, Link } from '@inertiajs/vue3';
                                         <div class="flex items-center" v-if="$page.props.auth.user.role == 1">
                                             <Link :href="`/quiz/test/${quiz.id}`" class="primary-button mr-5">Take Quiz</Link>
                                         </div>
-                                    
+                                        
                                         <div class="flex items-center" v-else>
-                                            <Link :href="`/quiz/${quiz.id}`" class="primary-button mr-5">View</Link>
+                                            <Link :href="route('quizzes.show', {quiz: quiz.id})" class="primary-button mr-5">View</Link>
                                         </div>
                                     </div>
                                 </div>

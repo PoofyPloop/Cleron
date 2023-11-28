@@ -1,67 +1,32 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 import Modal from '@/Components/Modal.vue';
 import { Head, useForm, usePage } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import QuestionCard from './Partials/QuestionCard.vue';
 
-const questionInput = ref('');
-const typeInput = ref('textbox');
-const scoreInput = ref('0');
-const option1Input = ref('');
-const option2Input = ref('');
-const option3Input = ref('');
-const option4Input = ref('');
-const answerInput = ref('option1');
 const confirmingQuestionDeletion = ref(false);
-const blocks = ref([1]);
 
 const form = useForm({
-    quiz_id: usePage().props.quiz.id,
-    
-    // new
-    questions: [],
-    types: [],
-    scores: [],
+    label: "New Question",
+    value: "",
+    type: "text",
     options: [],
-    options1: [],
-    options2: [],
-    options3: [],
-    options4: [],
-    answers: [],
-    
-    // old
-    question: '',
-    type: 'mcq',
-    score: 0,
-    option1: '',
-    option2: '',
-    option3: '',
-    option4: '',
-    answer: 'option1'
+    points: 1,
 });
 
+const questions = ref(usePage().props.quiz.questions,);
+
 const addQuestion = () => {
-    form.post(route('question.store'), {
+    form.post(route('quizzes.questions.store', {quiz: usePage().props.quiz.id,}), {
+        preserveState: true,
         preserveScroll: true,
-        onSuccess: () => {
-            form.reset()
-            blocks = [1]
-        },
-        onError: () => {
-            if (form.errors.question) {
-                questionInput.value.focus();
-            }
-        },
+        only: ['quiz'],
     });
 };
 
-const form2 = useForm({});
 
 const confirmQuestionDeletion = () => {
     confirmingQuestionDeletion.value = true;
@@ -72,7 +37,6 @@ const deleteQuestion = (id) => {
         preserveScroll: true,
         onSuccess: () => closeModal(),
         onError: () => {},
-        onFinish: () => form2.reset(),
     });
 };
 
@@ -132,131 +96,18 @@ const closeModal = () => {
                     </div>
                 </div>
 
-                <form @submit.prevent="addQuestion" class="mt-6 space-y-6">
-                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mt-6" v-for="(b, index) in blocks" :key="index">
+                <div class="mt-6 space-y-6">
+                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mt-6" v-for="question in questions" :key="question">
                         <div class="p-6 text-gray-900">
                             <div class="flex items-center justify-between">
                                 <h2 class="title-h2">Add Question</h2>
                             </div>
-
-                            <div class="pt-4 mb-6 space-y-4">
-                                <div>
-                                    <InputLabel for="question" value="Question" />
-
-                                    <textarea ref="questionInput" id="question" v-model="form.questions[index]"></textarea>
-
-                                    <InputError :message="form.errors.category" class="mt-2" />
-                                </div>
-
-                                <div class="flex items-center justify-between">
-                                    <p>Answer Type</p>
-
-                                    <label>
-                                        <input type="radio" ref="typeInput" v-model="form.types[index]" value="textbox">
-                                        Textbox
-                                    </label>
-
-                                    <label>
-                                        <input checked type="radio" ref="typeInput" v-model="form.types[index]" value="mcq">
-                                        Multiple Choice
-                                    </label>
-
-                                    <div class="flex items-center space-x-2">
-                                        <p>Points</p>
-                                        <input type="number" ref="scoreInput" class="border-gray-300 focus:border-primary-500 focus:ring-primary-500 rounded-md shadow-sm w-full mt-1" v-model="form.scores[index]" min="1">
-                                    </div>
-                                </div>
-
-                                <div v-if="form.type == 'mcq'">
-                                    <div class="grid grid-cols-12 gap-6">
-                                        <div class="col-span-12 md:col-span-6">
-                                            <InputLabel for="option1" value="Option 1" />
-
-                                            <TextInput
-                                                id="option1"
-                                                ref="option1Input"
-                                                v-model="form.options1[index]"
-                                                type="text"
-                                                class="mt-1 block w-full"
-                                                required
-                                            />
-
-                                            <InputError :message="form.errors.option1" class="mt-2" />
-                                        </div>
-                                        
-                                        <div class="col-span-12 md:col-span-6">
-                                            <InputLabel for="option2" value="Option 2" />
-
-                                            <TextInput
-                                                id="option2"
-                                                ref="option2Input"
-                                                v-model="form.options2[index]"
-                                                type="text"
-                                                class="mt-1 block w-full"
-                                                required
-                                            />
-
-                                            <InputError :message="form.errors.option2" class="mt-2" />
-                                        </div>
-
-                                        <div class="col-span-12 md:col-span-6">
-                                            <InputLabel for="option3" value="Option 3" />
-
-                                            <TextInput
-                                                id="option3"
-                                                ref="option3Input"
-                                                v-model="form.options3[index]"
-                                                type="text"
-                                                class="mt-1 block w-full"
-                                            />
-
-                                            <InputError :message="form.errors.option3" class="mt-2" />
-                                        </div>
-
-                                        <div class="col-span-12 md:col-span-6">
-                                            <InputLabel for="option4" value="Option 4" />
-
-                                            <TextInput
-                                                id="option4"
-                                                ref="option4Input"
-                                                v-model="form.options4[index]"
-                                                type="text"
-                                                class="mt-1 block w-full"
-                                            />
-
-                                            <InputError :message="form.errors.option4" class="mt-2" />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <InputLabel for="answer" value="Answer" />
-
-                                    <select required ref="answerInput" v-model="form.answers[index]">
-                                        <option value="option1" selected>
-                                            Option 1
-                                        </option>
-                                        <option value="option2">
-                                            Option 2
-                                        </option>
-                                        <option value="option3">
-                                            Option 3
-                                        </option>
-                                        <option value="option4">
-                                            Option 4
-                                        </option>
-                                    </select>
-
-                                    <InputError :message="form.errors.category" class="mt-2" />
-                                </div>
-                            </div>
+                            <QuestionCard :question="question"></QuestionCard>
                         </div>
                     </div>
 
                     <div class="flex items-center gap-4">
-                        <button class="primary-button" type="button" @click="blocks.push(blocks.length + 1)">Add More</button>
-
-                        <PrimaryButton :disabled="form.processing">Save</PrimaryButton>
+                        <button class="primary-button" type="button" @click="addQuestion">Add Question</button>
                     </div>
 
                     <div>
@@ -290,7 +141,7 @@ const closeModal = () => {
                             </div>
                         </Transition>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     </AuthenticatedLayout>

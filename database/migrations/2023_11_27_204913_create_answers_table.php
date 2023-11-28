@@ -13,13 +13,9 @@ return new class extends Migration
     {
         Schema::create('answers', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('question_id')->unsigned()->nullable();
-            $table->foreign('question_id')->references('id')->on('questions')->onDelete('cascade');
-
-            // if its a textbox then store the answer in text column, if its mcq then store the answer in text column and options in choices
-            $table->string('text')->nullable();
-            $table->json('choices')->nullable();
-            $table->string('answer')->notNullable();
+            $table->string("value");
+            $table->foreignId('question_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }

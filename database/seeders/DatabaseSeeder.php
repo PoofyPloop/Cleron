@@ -18,7 +18,6 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@test.com',
             'role' => 3,
             'school' => 'Test School',
-            'password' => Hash::make('password')
         ]);
 
         \App\Models\User::factory()->create([
@@ -26,7 +25,6 @@ class DatabaseSeeder extends Seeder
             'email' => 'teacher@test.com',
             'role' => 2,
             'school' => 'Test School',
-            'password' => Hash::make('password')
         ]);
 
         \App\Models\User::factory()->create([
@@ -34,44 +32,14 @@ class DatabaseSeeder extends Seeder
             'email' => 'student@test.com',
             'role' => 1,
             'school' => 'Test School',
-            'password' => Hash::make('password')
         ]);
 
-        // create subjects
-        \App\Models\Subject::factory()->create([
-            'title' => 'Math',
-            'slug' => 'math'
-        ]);
-
-        \App\Models\Subject::factory()->create([
-            'title' => 'Science',
-            'slug' => 'science'
-        ]);
-
-        \App\Models\Subject::factory()->create([
-            'title' => 'Geography',
-            'slug' => 'geography'
-        ]);
-
-        // create categories
-        \App\Models\Category::factory()->create([
-            'title' => 'Algebra',
-            'slug' => 'algebra'
-        ]);
-
-        \App\Models\Category::factory()->create([
-            'title' => 'Statistics',
-            'slug' => 'statistics'
-        ]);
-
-        \App\Models\Category::factory()->create([
-            'title' => 'Arithmetic',
-            'slug' => 'arithmetic'
-        ]);
-
-        \App\Models\Category::factory()->create([
-            'title' => 'Probability',
-            'slug' => 'probability'
+        $this -> call([
+            SubjectSeeder::class,
+            CategorySeeder::class,
+            QuizSeeder::class,
+            QuestionSeeder::class,
+            AnswerSeeder::class,
         ]);
     }
 }

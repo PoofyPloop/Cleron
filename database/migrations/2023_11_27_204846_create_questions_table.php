@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('questions', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('quiz_id')->unsigned()->nullable();
-            $table->foreign('quiz_id')->references('id')->on('quizzes')->onDelete('cascade');
-
-            $table->string('text');
-            $table->string('type');
-            $table->integer('score');
+            $table->string("label");
+            $table->string("value")->nullable();
+            $table->json("options")->nullable();
+            $table->string("type")->default("text");
+            $table->integer("points")->default(1);
+            $table->foreignId("quiz_id")->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }

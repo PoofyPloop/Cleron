@@ -66,16 +66,15 @@ class QuizController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Quiz $quiz)
     {
         $categories = Category::all();
         $subjects = Subject::all();
-        $quiz = Quiz::where('id', $id)->with('questions.answer')->first();
 
         return Inertia::render('Quiz/Show', [
             'categories' => $categories,
             'subjects' => $subjects,
-            'quiz' => $quiz
+            'quiz' => fn() => $quiz -> load(['questions'])
         ]);
     }
 
