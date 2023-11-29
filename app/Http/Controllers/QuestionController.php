@@ -23,7 +23,7 @@ class QuestionController extends Controller
      */
     public function create(Quiz $quiz)
     {
-        return Intertia::render("Quiz/Create", ['quiz' => $quiz]);
+        //
     }
 
     /**
@@ -49,7 +49,15 @@ class QuestionController extends Controller
      */
     public function show(Quiz $quiz, Question $question)
     {
-        return Intertia::render("", []);
+        // return Intertia::render("", []);
+        $categories = Category::all();
+        $subjects = Subject::all();
+
+        return Inertia::render('Question/Show', [
+            'categories' => $categories,
+            'subjects' => $subjects,
+            'quiz' => $question
+        ]);
     }
 
     /**
@@ -57,7 +65,7 @@ class QuestionController extends Controller
      */
     public function edit(Quiz $quiz, Question $question)
     {
-        return Inertia::render("Question/Edit", ['quiz' => $quiz, 'question' => $question]);
+        //
     }
 
     /**
@@ -65,8 +73,14 @@ class QuestionController extends Controller
      */
     public function update(Request $request, Quiz $quiz, Question $question)
     {
-        $validated = $request -> validate([]);
-        $quiz->questions()->update($validated, $question->id);
+        $validated = $request -> validate([
+            'text' => 'required|string|max:200',
+            'type' => 'required|in:textbox,radio',
+            'points' => 'required|integer|min:1',
+            'options.*.label' => 'required_if:type,radio|string|max:200',
+            'value' => 'required_if:type,textbox|string|max:200',
+        ]);
+        $quiz->questions()->update($validated);
         return redirect()->back();
     }
 

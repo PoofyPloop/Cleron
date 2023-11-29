@@ -76,12 +76,19 @@ const closeModal = () => {
 
                                 <Modal :show="confirmingQuestionDeletion" @close="closeModal">
                                     <div class="p-6">
-                                        <h2 class="text-lg font-medium text-gray-900">
-                                            Are you sure you want to delete this question?
-                                        </h2>
+                                        <button type="button" class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center" data-modal-hide="popup-modal" @click="closeModal">
+                                                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                                </svg>
+                                                <span class="sr-only">Close modal</span>
+                                        </button>
+                                        <svg class="mx-auto my-4 text-gray-600 w-12 h-12" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                                        </svg>
+                                        <h3 class="my-5 text-lg font-normal text-gray-700 flex items-center justify-center">Are you sure you want to delete this question?</h3>
 
                                         <div class="mt-6 flex justify-end">
-                                            <SecondaryButton @click="closeModal"> Cancel </SecondaryButton>
+                                            <SecondaryButton data-modal-hide="popup-modal" @click="closeModal">Cancel</SecondaryButton>
 
                                             <DangerButton
                                                 class="ml-3"
@@ -110,40 +117,8 @@ const closeModal = () => {
                             </div>
                         </div>
 
-                        <div class="flex items-center gap-4">
-                            <button class="primary-button" type="button" @click="addQuestion">Add Question</button>
-                        </div>
-
-                        <div>
-                            <Transition
-                                enter-active-class="transition ease-in-out"
-                                enter-from-class="opacity-0"
-                                leave-active-class="transition ease-in-out"
-                                leave-to-class="opacity-0"
-                            >
-                                <div class="rounded-md bg-green-50 p-4" v-if="form.recentlySuccessful">
-                                    <div class="flex">
-                                        <div class="flex-shrink-0">
-                                            <svg class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
-                                            </svg>
-                                        </div>
-                                        <div class="ml-3">
-                                            <p class="text-sm font-medium text-green-800">Saved</p>
-                                        </div>
-                                        <div class="ml-auto pl-3">
-                                            <div class="-mx-1.5 -my-1.5">
-                                                <button type="button" class="inline-flex rounded-md bg-green-50 p-1.5 text-green-500 hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 focus:ring-offset-green-50">
-                                                    <span class="sr-only">Dismiss</span>
-                                                    <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                                        <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
-                                                    </svg>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </Transition>
+                        <div class="flex items-center">
+                            <button class="primary-button mt-4" type="button" @click="addQuestion">Add</button>
                         </div>
                     </div>
                 </div>

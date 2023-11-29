@@ -27,7 +27,7 @@ import { Head, Link } from '@inertiajs/vue3';
                                         </div>
                                         
                                         <div class="flex items-center" v-if="$page.props.auth.user.role == 1">
-                                            <Link :href="`/quiz/test/${quiz.id}`" class="primary-button mr-5">Take Quiz</Link>
+                                            <Link :href="route('quizzes.show', {quiz: quiz.id})" class="primary-button mr-5">Take Quiz</Link>
                                         </div>
                                         
                                         <div class="flex items-center" v-else>

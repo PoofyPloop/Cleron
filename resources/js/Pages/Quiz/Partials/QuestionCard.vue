@@ -39,7 +39,7 @@ import {useForm, usePage} from '@inertiajs/vue3';
         <div>
             <InputLabel for="question" value="Question" />
 
-            <textarea ref="questionInput" id="question" v-model="form.label"></textarea>
+            <textarea ref="questionInput" id="question" v-model="form.label" class="focus:border-blue-500 focus:ring-blue-500"></textarea>
 
             <InputError :message="form.errors.category" class="mt-2" />
         </div>
@@ -59,14 +59,14 @@ import {useForm, usePage} from '@inertiajs/vue3';
 
             <div class="flex items-center space-x-2">
                 <p>Points</p>
-                <input type="number" ref="scoreInput" class="border-gray-300 focus:border-primary-500 focus:ring-primary-500 rounded-md shadow-sm w-full mt-1" v-model="form.points" min="1">
+                <input type="number" ref="scoreInput" class="border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md shadow-sm w-full mt-1" v-model="form.points" min="1">
             </div>
         </div>
 
         <div v-if="form.type == 'radio'">
             <div class="grid grid-cols-12 gap-6">
-                <div v-for="option in form.options" class="col-span-12 md:col-span-6">
-                    <InputLabel for="option1" value="Option 1" />
+                <div v-for="option in form.options" class="col-span-12">
+                    <InputLabel for="option1" value="Option 1"/>
 
                     <TextInput
                         id="option1"
@@ -109,10 +109,10 @@ import {useForm, usePage} from '@inertiajs/vue3';
             <InputLabel for="answer" value="Answer"/>
             
             <div class="grid grid-cols-2 gap-4"> 
-                <input class="border-gray-300 focus:border-primary-500 focus:ring-primary-500 rounded-md shadow-sm">
-                <input class="border-gray-300 focus:border-primary-500 focus:ring-primary-500 rounded-md shadow-sm">
-                <input class="border-gray-300 focus:border-primary-500 focus:ring-primary-500 rounded-md shadow-sm">
-                <input class="border-gray-300 focus:border-primary-500 focus:ring-primary-500 rounded-md shadow-sm">
+                <input class="border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md shadow-sm">
+                <input class="border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md shadow-sm">
+                <input class="border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md shadow-sm">
+                <input class="border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md shadow-sm">
             </div>
             
             <InputError :message="form.errors.category" class="mt-2" />
