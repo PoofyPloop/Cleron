@@ -25,9 +25,7 @@ class AnswerController extends Controller
      */
     public function create(Quiz $quiz, Question $question)
     {
-        dd($quiz->questions);
-        dd($question->answers);
-        return Intertia::render("");
+        //
     }
 
     /**
@@ -44,9 +42,7 @@ class AnswerController extends Controller
      */
     public function show(Quiz $quiz, Question $question, Answer $answer)
     {
-        dd($quiz->questions);
-        dd($question->answers);
-        return Intertia::render("");
+        //
     }
 
     /**
@@ -54,7 +50,7 @@ class AnswerController extends Controller
      */
     public function edit(Quiz $quiz, Question $question, Answer $answer)
     {
-        return Inertia::render("Question/Edit", ['quiz' => $quiz, 'question' => $question, 'answer' => $answer]);
+        //
     }
 
     /**

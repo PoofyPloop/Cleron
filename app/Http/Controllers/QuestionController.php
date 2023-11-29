@@ -49,15 +49,7 @@ class QuestionController extends Controller
      */
     public function show(Quiz $quiz, Question $question)
     {
-        // return Intertia::render("", []);
-        $categories = Category::all();
-        $subjects = Subject::all();
-
-        return Inertia::render('Question/Show', [
-            'categories' => $categories,
-            'subjects' => $subjects,
-            'quiz' => $question
-        ]);
+        //
     }
 
     /**
@@ -75,7 +67,7 @@ class QuestionController extends Controller
     {
         $validated = $request -> validate([
             'text' => 'required|string|max:200',
-            'type' => 'required|in:textbox,radio',
+            'type' => 'required|in:text,radio,textarea',
             'points' => 'required|integer|min:1',
             'options.*.label' => 'required_if:type,radio|string|max:200',
             'value' => 'required_if:type,textbox|string|max:200',

@@ -1,124 +1,211 @@
 <script setup>
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import TextInput from '@/Components/TextInput.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import DangerButton from '@/Components/DangerButton.vue';
-import {useForm, usePage} from '@inertiajs/vue3';
+import InputError from "@/Components/InputError.vue";
+import InputLabel from "@/Components/InputLabel.vue";
+import TextInput from "@/Components/TextInput.vue";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
+import DangerButton from "@/Components/DangerButton.vue";
+import { useForm, usePage } from "@inertiajs/vue3";
+import { toRef, watch } from "vue";
 
-    const props = defineProps(['question']); // Defines the props to access external properties
-    const form = useForm(props.question); // Initializes form with question data
+const props = defineProps(["question"]); // Defines the props to access external properties
 
-    /**
-     * Saves question
-     */
-    const saveQuestion = () => {
-    form.post(route('quizzes.questions.store', { quiz: usePage().props.quiz.id }), {
-        preserveState: true,
-        preserveScroll: true,
-        only: ['quiz'],
-    });
+const question = toRef(props.question);
+
+const form = useForm({
+  ...question.value,
+});
+
+/**
+ * Saves question
+ */
+const saveQuestion = () => {
+  form.post(
+    route("quizzes.questions.update", {
+      quiz: usePage().props.quiz.id,
+      question: props.question.id,
+    }),
+    {
+      preserveState: true,
+      preserveScroll: true,
+      only: ["quiz"],
+    }
+  );
 };
 
-    /**
-     * Deletes question of choice.
-     * @returns {void}
-     */
-    const deleteQuestion = () => {
-        form.delete(route('quizzes.questions.destroy',  {quiz: usePage().props.quiz.id, question: props.question.id}), {
-            preserveState: true,
-            preserveScroll: true,
-            only: ['quiz'],
-        });
-    };
-    
+const addOption = () => {
+  if (form.options.length >= 4) return;
+  form.options.push({
+    label: "",
+    value: "",
+  });
+};
+
+const removeOption = (index) => {
+  if (form.options.length <= 2) return;
+  form.options.splice(index, 1);
+};
+
+/**
+ * Deletes question of choice.
+ * @returns {void}
+ */
+const deleteQuestion = () => {
+  form.delete(
+    route("quizzes.questions.destroy", {
+      quiz: usePage().props.quiz.id,
+      question: props.question.id,
+    }),
+    {
+      preserveScroll: true,
+      only: ["quiz"],
+    }
+  );
+};
+
+watch(props.question, (newValue) => {
+  question.value = newValue;
+});
+
+watch(question, () => {
+  if (question.value.type == "radio")
+    question.value.options = question.value.options || [
+      {
+        label: "",
+        value: "",
+      },
+      {
+        label: "",
+        value: "",
+      },
+    ];
+});
 </script>
 
 <template>
-    <div class="space-y-4">
-        <div>
-            <InputLabel for="question" value="Question" />
+  <div class="space-y-4">
+    <div>
+      <InputLabel for="question" value="Question" />
 
-            <textarea ref="questionInput" id="question" v-model="form.label" class="focus:border-blue-500 focus:ring-blue-500"></textarea>
+      <textarea
+        ref="questionInput"
+        id="question"
+        v-model="form.label"
+        class="focus:border-blue-500 focus:ring-blue-500"
+      ></textarea>
 
-            <InputError :message="form.errors.category" class="mt-2" />
-        </div>
+      <InputError :message="form.errors.category" class="mt-2" />
+    </div>
 
-        <div class="flex items-center justify-between">
-            <p>Answer Type</p>
+    <div class="flex items-center justify-between">
+      <p>Answer Type</p>
 
-            <label>
-                <input type="radio" ref="typeInput" v-model="form.type" value="textbox">
-                Textbox
-            </label>
+      <label>
+        <input
+          type="radio"
+          ref="typeInput"
+          v-model="form.type"
+          value="textbox"
+        />
+        Textbox
+      </label>
 
-            <label>
-                <input type="radio" ref="typeInput" v-model="form.type" value="radio">
-                Multiple Choice
-            </label>
+      <label>
+        <input type="radio" ref="typeInput" v-model="form.type" value="radio" />
+        Multiple Choice
+      </label>
 
-            <div class="flex items-center space-x-2">
-                <p>Points</p>
-                <input type="number" ref="scoreInput" class="border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md shadow-sm w-full mt-1" v-model="form.points" min="1">
+      <label>
+        <input
+          type="radio"
+          ref="typeInput"
+          v-model="form.type"
+          value="textarea"
+        />
+        Text Area
+      </label>
+
+      <div class="flex items-center space-x-2">
+        <p>Points</p>
+        <input
+          type="number"
+          ref="scoreInput"
+          class="border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md shadow-sm w-full mt-1"
+          v-model="form.points"
+          min="1"
+        />
+      </div>
+    </div>
+
+    <div v-if="form.type == 'radio'">
+      <div class="grid grid-cols-2 gap-4">
+        <div class="col-span-2 flex justify-start items-center">
+            <div>
+                <PrimaryButton @click="addOption">Add option</PrimaryButton>
+            </div>
+            <div>
+                <PrimaryButton class="mx-2" @click="removeOption">Remove option</PrimaryButton>
             </div>
         </div>
-
-        <div v-if="form.type == 'radio'">
-            <div class="grid grid-cols-12 gap-6">
-                <div v-for="option in form.options" class="col-span-12">
-                    <InputLabel for="option1" value="Option 1"/>
-
-                    <TextInput
-                        id="option1"
-                        ref="option1Input"
-                        v-model="option.label"
-                        type="text"
-                        class="mt-1 block w-full"
-                        required
-                    />
-                    <TextInput
-                        id="option1"
-                        ref="option1Input"
-                        v-model="option.value"
-                        type="text"
-                        class="mt-1 block w-full"
-                        required
-                    />
-
-                    <InputError :message="form.errors.label" class="mt-2" />
-                </div>
-            </div>
-        </div>
-
-        <div>
-            <InputLabel for="answer" value="Answer" />
+        <div v-for="option in form.options">
+            <InputLabel for="option" value="Option" />
             
             <TextInput
-                id="option1"
-                ref="option1Input"
-                v-model="form.value"
+                id="option"
+                ref="optionInput"
+                v-model="option.label"
                 type="text"
                 class="mt-1 block w-full"
                 required
             />
-
-            <InputError :message="form.errors.category" class="mt-2" />
-        </div>
+            <TextInput
+                id="option"
+                ref="optionInput"
+                v-model="option.value"
+                type="text"
+                class="mt-1 block w-full"
+                required
+            />
         
-        <div>
-            <InputLabel for="answer" value="Answer"/>
-            
-            <div class="grid grid-cols-2 gap-4"> 
-                <input class="border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md shadow-sm">
-                <input class="border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md shadow-sm">
-                <input class="border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md shadow-sm">
-                <input class="border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md shadow-sm">
-            </div>
-            
-            <InputError :message="form.errors.category" class="mt-2" />
+            <InputError :message="form.errors.label" class="mt-2" />
         </div>
-        
-        <PrimaryButton :disabled="form.processing" @click="saveQuestion">Save</PrimaryButton>
-        <DangerButton class="ml-2" @click="deleteQuestion">Delete</DangerButton>
     </div>
+    <div class="mt-4">
+      <InputLabel for="answer" value="Answer" />
+
+      <TextInput
+        id="option"
+        ref="optionInput"
+        v-model="form.value"
+        type="text"
+        class="mt-1 block w-full"
+        required
+      />
+
+      <InputError :message="form.errors.category" class="mt-2" />
+    </div>
+    </div>
+
+    <div v-else-if="form.type == 'textarea'">
+      <textarea id="option" class="mt-1 block w-full" required />
+
+      <InputError :message="form.errors.category" class="mt-2" />
+    </div>
+    <div v-else>
+      <TextInput
+        id="option"
+        ref="optionInput"
+        v-model="form.value"
+        type="text"
+        class="mt-1 block w-full"
+        required
+      />
+
+      <InputError :message="form.errors.category" class="mt-2" />
+    </div>
+
+    <PrimaryButton :disabled="form.processing" @click="saveQuestion"
+      >Save</PrimaryButton
+    >
+    <DangerButton class="ml-2" @click="deleteQuestion">Delete</DangerButton>
+  </div>
 </template>
