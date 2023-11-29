@@ -20,7 +20,7 @@ import { Head, Link } from '@inertiajs/vue3';
                         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                             <div class="p-6 text-gray-900">
                                 <div class="flex justify-between">
-                                    <p>Completed</p>
+                                    <p>Quizzes Completed</p>
                                     <p class="text-4xl">{{ $page.props.scores ? $page.props.scores.length : 0 }}</p>
                                 </div>
                             </div>
@@ -42,7 +42,7 @@ import { Head, Link } from '@inertiajs/vue3';
                         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                             <div class="p-6 text-gray-900">
                                 <div class="flex justify-between">
-                                    <p>Discussions Participated</p>
+                                    <p>Discussion Participation</p>
                                     <p class="text-4xl">{{ $page.props.comments ? $page.props.comments.length : 0 }}</p>
                                 </div>
                             </div>
