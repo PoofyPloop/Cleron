@@ -74,6 +74,7 @@ const submit = () => {
                     <Checkbox name="remember" v-model:checked="form.remember" />
                     <span class="ml-2 text-sm text-gray-600">Remember me</span>
                 </label>
+                <Link :href="route('register')" class="ml-2 text-xs text-gray-600 flex justify-end ">Don't have an account? Click me!</Link>
             </div>
 
             <div class="flex items-center justify-end mt-4">

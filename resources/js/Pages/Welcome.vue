@@ -62,7 +62,7 @@ defineProps({
             </div>
             <div class="bg-black opacity-40 absolute top-0 left-0 w-full h-full"></div>
             <div class="absolute bottom-16 left-20">
-                <Link class="inline-flex items-center px-4 py-2 bg-white border border-transparent rounded-md font-semibold text-xs text-primay-400 uppercase tracking-widest hover:bg-gray-100 focus:bg-gray-100 active:bg-primary-900 focus:outline-none focus:ring-2 focus:ring-gray-200 focus:ring-offset-2 transition ease-in-out duration-150" :href="route('login')">Get Started</Link>
+                <Link class="inline-flex items-center px-4 py-2 bg-white border border-transparent rounded-md font-semibold text-xs text-primay-400 uppercase tracking-widest hover:bg-gray-100 focus:bg-gray-100 active:bg-primary-900 focus:outline-none focus:ring-2 focus:ring-gray-200 focus:ring-offset-2" :href="route('register')">Get Started</Link>
             </div>
         </div>
     </div>

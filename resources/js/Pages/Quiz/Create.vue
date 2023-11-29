@@ -25,7 +25,6 @@ const storeQuiz = () => {
         preserveScroll: true,
         onSuccess: () => {
             form.reset()
-            // alert('Quiz Created!')
         },
         onError: () => {
             if (form.errors.title) {
@@ -80,8 +79,8 @@ const storeQuiz = () => {
 
                                     <select ref="subjectInput" v-model="form.subject">
                                         <option value="null" selected>Select a subject</option>
-                                        <option v-for="sub in subjects" :key="sub.id" :value="sub.id">
-                                            {{ sub.title }}
+                                        <option v-for="subject in subjects" :key="subject.id" :value="subject.id">
+                                            {{ subject.title }}
                                         </option>
                                     </select>
 
@@ -93,8 +92,8 @@ const storeQuiz = () => {
 
                                     <select ref="categoryInput" v-model="form.category">
                                         <option value="null" selected>Select a category</option>
-                                        <option v-for="cat in categories" :key="cat.id" :value="cat.id">
-                                            {{ cat.title }}
+                                        <option v-for="category in categories" :key="category.id" :value="category.id">
+                                            {{ category.title }}
                                         </option>
                                     </select>
 
