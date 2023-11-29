@@ -6,7 +6,8 @@ use App\Models\Answer;
 use App\Models\Quiz;
 use App\Models\Question;
 use Illuminate\Http\Request;
-use Inertia\Inertia;;
+use Inertia\Inertia;
+;
 
 class AnswerController extends Controller
 {
@@ -15,9 +16,7 @@ class AnswerController extends Controller
      */
     public function index(Quiz $quiz, Question $question)
     {
-        dd($quiz->questions);
-        dd($question->answers);
-        return Intertia::render("Quiz/Index");
+        return Inertia::render("Quiz/Index");
     }
 
     /**
@@ -33,8 +32,19 @@ class AnswerController extends Controller
      */
     public function store(Request $request, Quiz $quiz, Question $question)
     {
-        $question->fill($request->all());
-        $question->save();
+        $validated = $request->validate([
+            'answers' => 'required|array'
+        ]);
+        collect($validated['answers'])->each(function (array $answer) use ($question) {
+            $question->answes()->create([
+                'user_id' => auth()->id(),
+                'value' => "required|string",
+                'options' => "required_if:type,radio|array",
+                'options.*.value' => 'required_if:type,radio|string|max:200',
+            ]);
+        });
+
+        return redirect()->route('WHATEVER UR QUIZ SUCCESS URL IS');
     }
 
     /**
@@ -58,8 +68,16 @@ class AnswerController extends Controller
      */
     public function update(Request $request, Quiz $quiz, Question $question, Answer $answer)
     {
-        $question->fill($request->all());
-        $question->save();
+        $validated = $request->validate([
+            // Add answer rules
+            'options' => "required_if:type,radio|array",
+            'options.*.value' => 'required_if:type,radio|string|max:200',
+            'value' => 'required_if:type,textbox|string|max:200',
+        ]);
+
+        $answer->update($validated);
+// a wild justin has been sighted --->  
+        return redirect()->back();
     }
 
     /**
@@ -68,6 +86,7 @@ class AnswerController extends Controller
     public function destroy(Quiz $quiz, Question $question, Answer $answer)
     {
         $answer->delete();
+
         return redirect()->back();
     }
 }

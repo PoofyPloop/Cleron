@@ -60,7 +60,7 @@ import { Head, Link } from '@inertiajs/vue3';
                             <div class="p-6 text-gray-900">
                                 <div class="flex justify-between">
                                     <p>Access Quizzes</p>
-                                    <Link href="/quiz" class="primary-button" >View</Link>
+                                    <Link href="/quizzes" class="primary-button" >View</Link>
                                 </div>
                             </div>
                         </div>

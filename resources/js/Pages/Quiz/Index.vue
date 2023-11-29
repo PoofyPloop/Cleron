@@ -43,7 +43,7 @@ const closeModal = () => {
                 <div>
                     <h3 class="title-h3 text-gray-600 pb-2">All Quizzes</h3>
                     <Link
-                        href="/quiz/create"
+                        href="/quizzes/create"
                         class="primary-button"
                     >
                         Create New Quiz

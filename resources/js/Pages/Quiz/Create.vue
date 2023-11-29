@@ -56,7 +56,7 @@ const storeQuiz = () => {
                     <div class="p-6 text-gray-900">
                         <div class="flex items-center justify-between">
                             <h2 class="title-h2">Create Quiz</h2>
-                            <Link href="/quiz" class="text-sm text-primary-500">Back to all quiz</Link>
+                            <Link href="/quizzes" class="text-sm text-primary-500">Back to all quiz</Link>
                         </div>
 
                         <div>

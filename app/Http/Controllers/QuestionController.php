@@ -14,8 +14,7 @@ class QuestionController extends Controller
      */
     public function index(Quiz $quiz)
     {
-        dd($quiz->questions);
-        return Intertia::render("Quiz/Index");
+        return Inertia::render("Quiz/Index");
     }
 
     /**
@@ -35,7 +34,9 @@ class QuestionController extends Controller
             'label' => "required|string",
             'value' => "nullable",
             'type' => "required|in:text,radio,textarea",
-            'options' => "nullable|array",
+            'options' => "required_if:type,radio|array",
+            'options.*.label' => 'required_if:type,radio|string|max:200',
+            'options.*.value' => 'required_if:type,radio|string|max:200',
             'points'=> "required|integer",
         ]);
 
@@ -69,10 +70,14 @@ class QuestionController extends Controller
             'text' => 'required|string|max:200',
             'type' => 'required|in:text,radio,textarea',
             'points' => 'required|integer|min:1',
+            'options' => "required_if:type,radio|array",
             'options.*.label' => 'required_if:type,radio|string|max:200',
+            'options.*.value' => 'required_if:type,radio|string|max:200',
             'value' => 'required_if:type,textbox|string|max:200',
         ]);
+
         $quiz->questions()->update($validated);
+
         return redirect()->back();
     }
 
