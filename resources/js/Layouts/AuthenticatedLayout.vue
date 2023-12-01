@@ -1,3 +1,5 @@
+<!-- StAuth10244: I Rawad Haddad, 000777218 certify that this material is my original work. No other person's work has been used without due acknowledgement. I have not made my work available to anyone else. -->
+
 <script setup>
 import { ref,watch } from 'vue';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
@@ -42,7 +44,7 @@ const pageLinks = [
                                 </Link>
                             </div>
 
-                            <!-- Navigation Links -->
+                            <!-- Pages Navigation -->
                             <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                                 <NavLink v-for="link in pageLinks" :key="link.route" :href="link.route" :active="route().current(link.route)">
                                     {{ link.label }}
@@ -106,7 +108,7 @@ const pageLinks = [
                             </div>
                         </div>
 
-                        <!-- Hamburger -->
+                        <!-- Hamburger Menu -->
                         <div class="-mr-2 flex items-center sm:hidden">
                             <button
                                 @click="showingNavigationDropdown = !showingNavigationDropdown"

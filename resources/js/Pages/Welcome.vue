@@ -1,3 +1,5 @@
+<!-- StAuth10244: I Rawad Haddad, 000777218 certify that this material is my original work. No other person's work has been used without due acknowledgement. I have not made my work available to anyone else. -->
+
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
 
@@ -33,7 +35,7 @@ defineProps({
                     <Link
                         v-if="$page.props.auth.user"
                         :href="route('dashboard')"
-                        class="font-semibold text-white hover:text-gray-100 focus:outline focus:outline-2 focus:rounded-sm"
+                        class="font-semibold text-white hover:text-gray-100 focus:text-white"
                     >
                         Dashboard
                     </Link>
@@ -41,14 +43,14 @@ defineProps({
                     <template v-else>
                         <Link
                             :href="route('login')"
-                            class="font-semibold text-white hover:text-gray-100 focus:outline focus:outline-2 focus:rounded-sm"
+                            class="font-semibold text-white hover:text-gray-100 focus:text-white"
                             >Log in</Link
                         >
 
                         <Link
                             v-if="canRegister"
                             :href="route('register')"
-                            class="ml-4 font-semibold text-white hover:text-gray-100 focus:outline focus:outline-2 focus:rounded-sm"
+                            class="ml-4 font-semibold text-white hover:text-gray-100 focus:text-white"
                             >Register</Link
                         >
                     </template>

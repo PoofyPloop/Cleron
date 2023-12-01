@@ -1,5 +1,7 @@
 <?php
 
+// StAuth10244: I Rawad Haddad, 000777218 certify that this material is my original work. No other person's work has been used without due acknowledgement. I have not made my work available to anyone else.
+
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\QuestionController;
@@ -43,25 +45,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-    // quiz
-    // Route::get('/quiz/test/{id}', [QuizController::class, 'test'])->name('quiz.test');
-    // Route::post('/quiz/test/{id}', [QuizController::class, 'result'])->name('quiz.result');
-    // Route::get('/quiz', [QuizController::class, 'index'])->name('quiz.index');
-    // Route::get('/quiz/create', [QuizController::class, 'create'])->name('quiz.create');
-    // Route::get('/quiz/{id}', [QuizController::class, 'show'])->name('quiz.show');
-    // Route::get('/quiz/{id}/edit', [QuizController::class, 'edit'])->name('quiz.show');
-    // Route::post('/quiz', [QuizController::class, 'store'])->name('quiz.store');
-    // Route::put('/quiz/{id}', [QuizController::class, 'update'])->name('quiz.update');
-    // Route::delete('/quiz/{id}', [QuizController::class, 'destroy'])->name('quiz.destroy');
-
-    // question
-    // Route::get('/question', [QuestionController::class, 'index'])->name('question.index');
-    // Route::get('/question/{id}', [QuestionController::class, 'show'])->name('question.show');
-    // Route::get('/question/create', [QuestionController::class, 'create'])->name('question.create');
-    // Route::post('/question', [QuestionController::class, 'store'])->name('question.store');
-    // Route::put('/question/{id}', [QuestionController::class, 'update'])->name('question.update');
-    // Route::delete('/question/{id}', [QuestionController::class, 'destroy'])->name('question.destroy');
 
     Route::resource('subjects', SubjectController::class);
 
