@@ -21,7 +21,7 @@ class QuizFactory extends Factory
     public function definition(): array
     {
         return [
-            'title' => fake()->name(),
+            'title' => fake()->title(),
             'user_id' => User::factory(),
             'category_id' => Category::factory(),
             'subject_id' => Subject::factory(),
@@ -30,13 +30,4 @@ class QuizFactory extends Factory
         ];
     }
 
-    /**
-     * Indicate that the model's email address should be unverified.
-     */
-    public function unverified(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'email_verified_at' => null,
-        ]);
-    }
 }

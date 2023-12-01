@@ -17,6 +17,12 @@ const searchOptions = ref({
 watch(() => searchOptions.value, async (newSearch, oldSearch) => {
     router.get(route("dashboard"), newSearch)
 }, {deep: true});
+
+const pageLinks = [
+    { route: route('dashboard'), label: 'Home' },
+    { route: route('subjects.index'), label: 'Subjects' },
+    { route: route('discussions'), label: 'Discussions' },
+];
 </script>
 
 <template>
@@ -38,37 +44,33 @@ watch(() => searchOptions.value, async (newSearch, oldSearch) => {
 
                             <!-- Navigation Links -->
                             <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                                <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                                    Home
-                                </NavLink>
-
-                                <NavLink :href="route('subjects')" :active="route().current('subjects')">
-                                    Subjects
-                                </NavLink>
-
-                                <NavLink :href="route('discussions')" :active="route().current('discussions')">
-                                    Discussions
+                                <NavLink v-for="link in pageLinks" :key="link.route" :href="link.route" :active="route().current(link.route)">
+                                    {{ link.label }}
                                 </NavLink>
                             </div>
                         </div>
 
+                        <!-- Search Bar -->
                         <form class="items-center hidden sm:inline-flex">   
                             <label for="search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">
                                 Search
                             </label>
 
                             <div class="flex items-center">
-                                <input type="search" id="search" class="block w-80 p-2.5 text-sm text-gray-900 border border-gray-300 rounded-l-lg focus:ring-primary-500 focus:border-primary-500" placeholder="Search Questions, Discussions..."  v-model="searchOptions.search" required>
-                                
-                                <button type="submit" class="text-white border border-gray-400 bg-primary-400 hover:bg-primary-500 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-r-lg text-sm px-4 py-3">
-                                    <svg class="w-4 h-4 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
-                                    </svg>
-                                </button>
+                                <input type="search" id="search" class="block w-80 p-2.5 text-sm text-gray-900 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 w-96" placeholder="Search . . ."  v-model="searchOptions.search" required>
                             </div>
                         </form>
 
-                        <div class="hidden sm:flex sm:items-center sm:ml-6">
+                        <!-- TODO Chat Button -->
+                        <div class="mt-3 ml-6 mr-0">
+                            <ResponsiveNavLink>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 01-.923 1.785A5.969 5.969 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z" />
+                                </svg>
+                            </ResponsiveNavLink>
+                        </div>
+
+                        <div class="hidden sm:flex sm:items-center">
                             <!-- Settings Dropdown -->
                             <div class="ml-3 relative">
                                 <Dropdown align="right" width="48">
@@ -76,7 +78,7 @@ watch(() => searchOptions.value, async (newSearch, oldSearch) => {
                                         <span class="inline-flex rounded-md">
                                             <button
                                                 type="button"
-                                                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white hover:text-gray-100 focus:outline-none transition ease-in-out duration-150"
+                                                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white hover:text-gray-100 focus:outline-none"
                                             >
                                                 {{ $page.props.auth.user.name }}
 
@@ -98,9 +100,7 @@ watch(() => searchOptions.value, async (newSearch, oldSearch) => {
 
                                     <template #content>
                                         <DropdownLink :href="route('profile.edit')"> Profile </DropdownLink>
-                                        <DropdownLink :href="route('logout')" method="post" as="button">
-                                            Log Out
-                                        </DropdownLink>
+                                        <DropdownLink :href="route('logout')" method="post" as="button"> Log Out </DropdownLink>
                                     </template>
                                 </Dropdown>
                             </div>
@@ -145,16 +145,8 @@ watch(() => searchOptions.value, async (newSearch, oldSearch) => {
                     class="sm:hidden"
                 >
                     <div class="pt-2 pb-3 space-y-1">
-                        <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                            Home
-                        </ResponsiveNavLink>
-
-                        <ResponsiveNavLink :href="route('subjects')" :active="route().current('subjects')">
-                            Subjects
-                        </ResponsiveNavLink>
-
-                        <ResponsiveNavLink :href="route('discussions')" :active="route().current('discussions')">
-                            Discussions
+                        <ResponsiveNavLink v-for="link in pageLinks" :key="link.route" :href="link.route" :active="route().current(link.route)">
+                            {{ link.label }}
                         </ResponsiveNavLink>
                     </div>
 

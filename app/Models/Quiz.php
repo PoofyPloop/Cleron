@@ -37,4 +37,8 @@ class Quiz extends Model
     {
         return $this->hasMany(Question::class);
     }
+
+    public function results(?User $user = null) {
+        return $this->questions->load('answers');
+    }
 }

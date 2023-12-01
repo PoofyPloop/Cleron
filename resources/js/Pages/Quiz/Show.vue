@@ -3,8 +3,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, useForm, usePage } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import QuestionCard from './Partials/QuestionCard.vue';
-
-const confirmingQuestionDeletion = ref(false);
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const form = useForm({
     label: "New Question",
@@ -17,28 +16,10 @@ const form = useForm({
 const questions = ref(usePage().props.quiz.questions,);
 
 const addQuestion = () => {
-    form.post(route('quizzes.questions.store', {quiz: usePage().props.quiz.id,}), {
+    form.post(route('subjects.quizzes.questions.store', {subject: usePage().props.quiz.subject_id, quiz: usePage().props.quiz.id}), {
         preserveScroll: true,
         only: ['quiz'],
     });
-};
-
-
-const confirmQuestionDeletion = () => {
-    confirmingQuestionDeletion.value = true;
-};
-
-const deleteQuestion = (id) => {
-    form.delete(route('quizzes.questions.destroy', id), {
-        preserveScroll: true,
-        onSuccess: () => closeModal(),
-        onError: () => {},
-    });
-};
-
-const closeModal = () => {
-    confirmingQuestionDeletion.value = false;
-    form.reset();
 };
 </script>
 
@@ -76,7 +57,7 @@ const closeModal = () => {
                         </div>
 
                         <div class="flex items-center">
-                            <button class="primary-button mt-4" type="button" @click="addQuestion">Add</button>
+                            <PrimaryButton class="mt-4" type="button" @click="addQuestion">Add</PrimaryButton>
                         </div>
                     </div>
                 </div>

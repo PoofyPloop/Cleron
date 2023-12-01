@@ -7,6 +7,7 @@ use App\Http\Controllers\PagesController;
 use App\Http\Controllers\DiscussionController;
 use App\Http\Controllers\ChatsController;
 use App\Http\Controllers\AnswerController;
+use App\Http\Controllers\SubjectController;
 
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -36,10 +37,6 @@ Route::get('/home', [PagesController::class, 'home'])
 ->middleware(['auth', 'verified'])
 ->name('dashboard');
 
-Route::get('/subjects', [PagesController::class, 'subjects'])
-->middleware(['auth', 'verified'])
-->name('subjects');
-
 Route::get('/quiz/demo', [QuizController::class, 'demo'])->name('quiz.demo');
 
 Route::middleware('auth')->group(function () {
@@ -67,9 +64,12 @@ Route::middleware('auth')->group(function () {
     // Route::put('/question/{id}', [QuestionController::class, 'update'])->name('question.update');
     // Route::delete('/question/{id}', [QuestionController::class, 'destroy'])->name('question.destroy');
 
-    Route::resource('quizzes', QuizController::class);
-    Route::resource('quizzes.questions', QuestionController::class);
-    Route::resource('quizzes.questions.answers', AnswerController::class);
+    Route::resource('subjects', SubjectController::class);
+
+    Route::resource('subjects.quizzes', QuizController::class);
+    Route::get('/subjects/{subject}/quizzes/{quiz}/results', [QuizController::class,"result"]);
+    Route::resource('subjects.quizzes.questions', QuestionController::class);
+    Route::resource('subjects.quizzes.questions.answers', AnswerController::class);
 
     // discussions/comment
     Route::post('/discussions/{id}/comment', [DiscussionController::class, 'comment'])->name('discussions.comment');

@@ -45,4 +45,20 @@ class Question extends Model
     {
         return $this->hasMany(Answer::class);
     }
+
+    /**
+     * 
+     */
+    public function getScore(?User $user = null) {
+        $score = 0;
+        $this->answers()->when($user, function($query) use($user) {
+            $query->where('user_id', $user->id);
+        })->get()->each(function (Answer $answer) use($score) {
+            if ($answer->value == $this->value) {
+                $score += $this->points;
+            }
+        });
+
+        return $score;
+    }
 }

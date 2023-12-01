@@ -28,15 +28,26 @@ import { Head, Link } from '@inertiajs/vue3';
                     </div>
 
                     <div class="col-span-6">
-                            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                                <div class="p-6 text-gray-900">
-                                    <div class="flex justify-between">
-                                        <p>Discussions Created</p>
-                                        <p class="text-4xl">{{ $page.props.discussions ? $page.props.discussions.length : 0 }}</p>
-                                    </div>
+                        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                            <div class="p-6 text-gray-900">
+                                <div class="flex justify-between">
+                                    <p>Average Grades</p>
+                                    <p class="text-4xl">{{ $page.props.scores ? $page.props.scores.length : 0 }}</p>
                                 </div>
                             </div>
                         </div>
+                    </div>
+
+                    <div class="col-span-6">
+                        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                            <div class="p-6 text-gray-900">
+                                <div class="flex justify-between">
+                                    <p>Discussions Created</p>
+                                    <p class="text-4xl">{{ $page.props.discussions ? $page.props.discussions.length : 0 }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="col-span-6">
                         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
@@ -48,6 +59,7 @@ import { Head, Link } from '@inertiajs/vue3';
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
 

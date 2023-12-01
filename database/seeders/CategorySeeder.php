@@ -14,23 +14,84 @@ class CategorySeeder extends Seeder
     {
         // create categories
         \App\Models\Category::factory()->create([
+            'title' => 'Arithmetic',
+            'subject_id' => 1
+        ]);
+
+        \App\Models\Category::factory()->create([
             'title' => 'Algebra',
-            'slug' => 'algebra'
+            'subject_id' => 1
         ]);
 
         \App\Models\Category::factory()->create([
             'title' => 'Statistics',
-            'slug' => 'statistics'
+            'subject_id' => 1
         ]);
 
         \App\Models\Category::factory()->create([
-            'title' => 'Arithmetic',
-            'slug' => 'arithmetic'
+            'title' => 'Trigonometry',
+            'subject_id' => 1
         ]);
 
         \App\Models\Category::factory()->create([
-            'title' => 'Probability',
-            'slug' => 'probability'
+            'title' => 'Geometry',
+            'subject_id' => 1
+        ]);
+
+        \App\Models\Category::factory()->create([
+            'title' => 'Calculus',
+            'subject_id' => 1
+        ]);
+
+        \App\Models\Category::factory()->create([
+            'title' => 'Physics',
+            'subject_id' => 2
+        ]);
+
+        \App\Models\Category::factory()->create([
+            'title' => 'Chemistry',
+            'subject_id' => 2
+        ]);
+
+        \App\Models\Category::factory()->create([
+            'title' => 'Biology',
+            'subject_id' => 2
+        ]);
+
+        \App\Models\Category::factory()->create([
+            'title' => 'Earth Science',
+            'subject_id' => 2
+        ]);
+
+        \App\Models\Category::factory()->create([
+            'title' => 'Astronomy',
+            'subject_id' => 2
+        ]);
+
+        \App\Models\Category::factory()->create([
+            'title' => 'Regional Geography',
+            'subject_id' => 3
+        ]);
+
+        \App\Models\Category::factory()->create([
+            'title' => 'Geopolitics',
+            'subject_id' => 3
+        ]);
+
+        \App\Models\Category::factory()->create([
+            'title' => 'Cartography',
+            'subject_id' => 3
+
+        ]);
+
+        \App\Models\Category::factory()->create([
+            'title' => 'Climatology',
+            'subject_id' => 3
+        ]);
+
+        \App\Models\Category::factory()->create([
+            'title' => 'Meteorology',
+            'subject_id' => 3
         ]);
     }
 }

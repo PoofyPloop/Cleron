@@ -32,6 +32,9 @@ const saveQuestion = () => {
     );
 };
 
+/**
+ * Adds a new option block for the multiple choice
+ */
 const addOption = () => {
     if (form.options.length >= 4) return;
     form.options.push({
@@ -41,6 +44,9 @@ const addOption = () => {
     });
 };
 
+/**
+ * removes an option block from the multiple choice
+ */
 const removeOption = (index) => {
     if (form.options.length <= 2) return;
     form.options.splice(index, 1);
@@ -71,6 +77,7 @@ watch(props.question, (newValue) => {
 <template>
     <div class="space-y-4">
         <div>
+
             <InputLabel for="question" value="Question" />
 
             <textarea
@@ -78,7 +85,7 @@ watch(props.question, (newValue) => {
                 v-model="form.label"
                 class="focus:border-blue-500 focus:ring-blue-500"
             ></textarea>
-
+            
             <InputError :message="form.errors.category" class="mt-2" />
         </div>
 
@@ -87,18 +94,18 @@ watch(props.question, (newValue) => {
 
             <label :for="`question-${question.id}-type-1`">
                 <input
+                    :name="`question-${question.id}-type-1`"
+                    :id="`question-${question.id}-type-1`"
                     type="radio"
                     v-model="form.type"
-                    value="textbox"
-                    name="question-type"
-                    :id="`question-${question.id}-type-1`"
+                    value="text"
                 />
                 Textbox
             </label>
 
             <label :for="`question-${question.id}-type-2`">
                 <input
-                    name="question-type"
+                    :name="`question-${question.id}-type-2`"
                     :id="`question-${question.id}-type-2`"
                     type="radio"
                     v-model="form.type"
@@ -109,7 +116,7 @@ watch(props.question, (newValue) => {
 
             <label :for="`question-${question.id}-type-3`">
                 <input
-                    name="question-type"
+                    :name="`question-${question.id}-type-3`"
                     :id="`question-${question.id}-type-3`"
                     type="radio"
                     v-model="form.type"
@@ -207,11 +214,15 @@ watch(props.question, (newValue) => {
         </div>
 
         <div v-else-if="form.type == 'textarea'">
-            <textarea id="option" class="mt-1 block w-full" required />
+            <InputLabel for="answer" value="Answer" />
+            
+            <textarea id="option" class="mt-1 block w-full" required/>
 
             <InputError :message="form.errors.category" class="mt-2" />
         </div>
         <div v-else>
+            <InputLabel for="answer" value="Answer" />
+
             <TextInput
                 id="option"
                 ref="optionInput"

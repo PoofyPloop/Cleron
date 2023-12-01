@@ -17,7 +17,7 @@ class Category extends Model
      */
     protected $fillable = [
         'title',
-        'slug'
+        'subject_id'
     ];
 
     public function quizzes(): HasMany

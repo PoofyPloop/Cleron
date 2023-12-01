@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Quiz;
 use App\Models\Question;
+use App\Models\Subject;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -12,7 +13,7 @@ class QuestionController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Quiz $quiz)
+    public function index(Subject $subject, Quiz $quiz)
     {
         return Inertia::render("Quiz/Index");
     }
@@ -20,7 +21,7 @@ class QuestionController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(Quiz $quiz)
+    public function create(Subject $subject, Quiz $quiz)
     {
         //
     }
@@ -28,7 +29,7 @@ class QuestionController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, Quiz $quiz)
+    public function store(Request $request, Subject $subject, Quiz $quiz)
     {   
         $validated = $request -> validate([
             'label' => "required|string",
@@ -48,7 +49,7 @@ class QuestionController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Quiz $quiz, Question $question)
+    public function show(Subject $subject, Quiz $quiz, Question $question)
     {
         //
     }
@@ -56,7 +57,7 @@ class QuestionController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Quiz $quiz, Question $question)
+    public function edit(Subject $subject, Quiz $quiz, Question $question)
     {
         //
     }
@@ -64,13 +65,13 @@ class QuestionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Quiz $quiz, Question $question)
+    public function update(Request $request, Subject $subject, Quiz $quiz, Question $question)
     {
         $validated = $request -> validate([
             'text' => 'required|string|max:200',
             'type' => 'required|in:text,radio,textarea',
-            'points' => 'required|integer|min:1',
-            'options' => "required_if:type,radio|array",
+            'points' => 'required|integer|min:1|max:25',
+            'options' => "required_if:type,radio|array|min:2|max:4",
             'options.*.label' => 'required_if:type,radio|string|max:200',
             'options.*.value' => 'required_if:type,radio|string|max:200',
             'value' => 'required_if:type,textbox|string|max:200',
@@ -84,7 +85,7 @@ class QuestionController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Quiz $quiz, Question $question)
+    public function destroy(Subject $subject, Quiz $quiz, Question $question)
     {
         $question->delete();
         return redirect()->back();
