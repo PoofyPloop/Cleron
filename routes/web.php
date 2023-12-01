@@ -40,7 +40,6 @@ Route::get('/home', [PagesController::class, 'home'])
 Route::get('/quiz/demo', [QuizController::class, 'demo'])->name('quiz.demo');
 
 Route::middleware('auth')->group(function () {
-    // Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -83,10 +82,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/discussions', [DiscussionController::class, 'store'])->name('discussions.store');
     Route::put('/discussions/{id}', [DiscussionController::class, 'update'])->name('discussions.update');
     Route::delete('/discussions/{id}', [DiscussionController::class, 'destroy'])->name('discussions.destroy');
-
-    // messages
-    Route::get('/messages', [ChatsController::class, 'index']);
-    Route::get('/messages/inbox', [ChatsController::class, 'fetchMessages']);
 });
 
 require __DIR__.'/auth.php';

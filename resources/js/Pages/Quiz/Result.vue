@@ -21,7 +21,7 @@ const props = defineProps(['questions']);
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">
                         <p class="pb-6">You scored: </p>
-                        {{  questions}}
+                        {{ questions }}
                         <DangerButton>Report</DangerButton>
                         <!-- <Link class="primary-button">Retry</Link> -->
                     </div>

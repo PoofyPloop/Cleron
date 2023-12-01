@@ -39,6 +39,29 @@ const updateQuiz = () => {
         },
     });
 };
+
+const questionForm = useForm({
+    label: "New Question",
+    value: "",
+    type: "text",
+    options: [],
+    points: 1,
+});
+
+const questions = ref(usePage().props.quiz.questions);
+
+const addQuestion = () => {
+    questionForm.post(
+        route("subjects.quizzes.questions.store", {
+            subject: usePage().props.quiz.subject_id,
+            quiz: usePage().props.quiz.id,
+        }),
+        {
+            preserveScroll: true,
+            only: ["quiz"],
+        }
+    );
+};
 </script>
 
 <template>
@@ -178,6 +201,33 @@ const updateQuiz = () => {
                             </form>
                         </div>
                         <hr class="my-5" />
+                        <div class="mt-6 space-y-6">
+                            <div class="flex items-center justify-between">
+                                <h3 class="title-h3">Add Questions</h3>
+                            </div>
+                            <div class="mt-2">
+                                <div
+                                    class="bg-white overflow-hidden shadow-sm sm:rounded-lg mt-6"
+                                    v-for="question in questions"
+                                    :key="question"
+                                >
+                                    <div class="p-6 text-gray-900">
+                                        <QuestionCard
+                                            :question="question"
+                                        ></QuestionCard>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center">
+                                    <PrimaryButton
+                                        class="mt-4"
+                                        type="button"
+                                        @click="addQuestion"
+                                        >Add</PrimaryButton
+                                    >
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

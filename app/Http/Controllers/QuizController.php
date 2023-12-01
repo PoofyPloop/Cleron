@@ -26,11 +26,13 @@ class QuizController extends Controller
      */
     public function create(Subject $subject)
     {
-        $categories = Category::all();
+        if ($request->user()->role == 2) {
+            $categories = Category::all();
 
-        return Inertia::render('Quiz/Create', [
-            'categories' => $categories,
-        ]);
+            return Inertia::render('Quiz/Create', [
+                'categories' => $categories,
+            ]);
+        }
     }
 
     /**
@@ -75,18 +77,22 @@ class QuizController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Request $request, string $id)
     {
-        $categories = Category::all();
-        $subjects = Subject::all();
-        // $quiz = Quiz::where('id', $id)->with('questions.answer')->first();
-        $quiz = Quiz::findOrFail($id);
+        
+        if ($request->user()->role == 2) {
 
-        return Inertia::render('Quiz/Edit', [
-            'categories' => $categories,
-            'subjects' => $subjects,
-            'quiz' => $quiz
-        ]);
+            $categories = Category::all();
+            $subjects = Subject::all();
+            $quiz = Quiz::findOrFail($id);
+
+            return Inertia::render('Quiz/Edit', [
+                'categories' => $categories,
+                'subjects' => $subjects,
+                'quiz' => $quiz
+            ]);
+        }
+
     }
 
     /**
@@ -105,7 +111,7 @@ class QuizController extends Controller
             'subject_id' => $validated['subject'],
             'category_id' => $validated['category']
         ]);
-  
+        
         return back()->with([
             'data' => 'Quiz updated',
         ]);

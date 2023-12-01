@@ -58,7 +58,8 @@ const removeOption = (index) => {
  */
 const deleteQuestion = () => {
     form.delete(
-        route("quizzes.questions.destroy", {
+        route("subjects.quizzes.questions.destroy", {
+            subject: usePage().props.quiz.subject_id,
             quiz: usePage().props.quiz.id,
             question: props.question.id,
         }),
