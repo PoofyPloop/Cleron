@@ -11,7 +11,7 @@ use App\Models\User;
 use App\Models\Category;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Quiz>
  */
 class QuizFactory extends Factory
 {
@@ -23,12 +23,14 @@ class QuizFactory extends Factory
     public function definition(): array
     {
         return [
-            'title' => fake()->title(),
-            'user_id' => User::factory(),
+            'title' => fake()->realText(50),
+            'description' => fake()->realText(200),
+            'slug' => fake()->slug(),
+            'started_at' => fake()->dateTimeBetween('-1 day', '+1 day'),
+            'ended_at' => fake()->dateTimeBetween('-1 day', '+1 day'),
+            'user_id' => User::all()->count() ? User::all()->random()->id : User::factory(),
             'category_id' => Category::factory(),
             'subject_id' => Subject::factory(),
-            'start_time' => fake()->dateTimeBetween('-1 week', '+1 week'),
-            'end_time' => fake()->dateTimeBetween('-1 week', '+1 week'),
         ];
     }
 

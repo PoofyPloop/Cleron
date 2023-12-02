@@ -11,28 +11,18 @@ import TextareaInput from '@/Components/TextareaInput.vue';
 import { useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
-const titleInput = ref('');
-const contentInput = ref('');
 
 const form = useForm({
     title: '',
-    content: ''
+    description: '',
+    image: '',
 });
 
-const storeDiscussion = () => {
-    form.post(route('discussions.store'), {
+const onSubmit = () => {
+    form.post(route('threads.store'), {
         preserveScroll: true,
         onSuccess: () => {
             form.reset()
-            // alert('Discussion Created!')
-        },
-        onError: () => {
-            if (form.errors.title) {
-                titleInput.value.focus();
-            }
-            if (form.errors.content) {
-                contentInput.value.focus();
-            }
         },
     });
 };
@@ -52,17 +42,16 @@ const storeDiscussion = () => {
                     <div class="p-6 text-gray-900">
                         <div class="flex items-center justify-between">
                             <h2 class="title-h2">Create Discussion</h2>
-                            <Link href="/discussions" class="text-sm text-primary-500">Back to all discussions</Link>
+                            <Link :href="route('threads.index')" class="text-sm text-primary-500">Back to threads</Link>
                         </div>
 
                         <div>
-                            <form @submit.prevent="storeDiscussion" class="mt-6 space-y-6">
+                            <form @submit.prevent="onSubmit" class="mt-6 space-y-6">
                                 <div>
-                                    <InputLabel for="title" value="Discussion Title" />
+                                    <InputLabel for="title" value="Thread Title" />
 
                                     <TextInput
                                         id="title"
-                                        ref="titleInput"
                                         v-model="form.title"
                                         type="text"
                                         class="mt-1 block w-full"
@@ -72,16 +61,27 @@ const storeDiscussion = () => {
                                 </div>
 
                                 <div>
-                                    <InputLabel for="content" value="Content" />
+                                    <InputLabel for="description" value="description" />
 
                                     <TextareaInput
-                                        id="content"
-                                        ref="contentInput"
-                                        v-model="form.content"
+                                        id="description"
+                                        v-model="form.description"
                                         class="mt-1 block w-full"
                                     />
 
-                                    <InputError :message="form.errors.content" class="mt-2" />
+                                    <InputError :message="form.errors.description" class="mt-2" />
+                                </div>
+                                
+                                <div>
+                                    <InputLabel for="image" value="Image Url (optional)" />
+
+                                    <TextInput
+                                        id="image"
+                                        v-model="form.image"
+                                        class="mt-1 block w-full"
+                                    />
+
+                                    <InputError :message="form.errors.image" class="mt-2" />
                                 </div>
 
                                 <div class="flex items-center gap-4">

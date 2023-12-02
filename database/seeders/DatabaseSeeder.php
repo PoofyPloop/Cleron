@@ -36,12 +36,15 @@ class DatabaseSeeder extends Seeder
             'school' => 'Test School',
         ]);
 
-        $this -> call([
+        $this->call([
             SubjectSeeder::class,
             CategorySeeder::class,
             QuizSeeder::class,
+            ReportSeeder::class,
             QuestionSeeder::class,
             AnswerSeeder::class,
+            ThreadSeeder::class,
+            CommentSeeder::class,
         ]);
     }
 }

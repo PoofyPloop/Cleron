@@ -15,7 +15,7 @@ const props = defineProps(['subjects']);
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Subjects</h2>
         </template>
 
-        <div class="my-5 mx-96">
+        <div class="mx-96">
             <div class="bg-white rounded-lg p-5 mt-10 mb-5 flex justify-center border">
                 <button class="mx-10 text-lg">Math</button>
                 <button class="mx-10 text-lg">Science</button>
@@ -24,10 +24,10 @@ const props = defineProps(['subjects']);
             <div class="bg-white rounded-lg p-5 my-5 flex justify-center border"> 
                 <button class="mx-10 text-lg">Categories</button>
             </div>
-            <div class="grid grid-cols-3 gap-4">
+            <div class="flex flex-wrap gap-2 w-full">
                 <div class="border py-5 pl-5 bg-white rounded-xl" v-for="subject in subjects" :key="subject.id">
                     <p>{{ subject?.title }}</p>
-                    <div class="grid grid-cols-3" v-for="quiz in subject.quizzes" :key="quiz.id">
+                    <div class="" v-for="quiz in subject.quizzes" :key="quiz.id">
                         
                         <div class="col-span-2">
                             <p>{{ quiz?.title }}</p>
@@ -37,11 +37,11 @@ const props = defineProps(['subjects']);
     
                         <div class="flex items-center justify-center"> 
                             <div class="flex justify-center items-center" v-if="$page.props.auth.user.role == 1">
-                                <Link :href="route('subjects.quizzes.show', {subject: subject.id, quiz: quiz.id})" class="primary-button">Take Quiz</Link>
+                                <Link :href="route('subjects.quizzes.show', {subject: subject.slug, quiz: quiz.slug})" class="primary-button">Take Quiz</Link>
                             </div>
                                 
                             <div v-else>
-                                <Link :href="route('subjects.quizzes.edit', {subject: subject.id, quiz: quiz.id})" class="primary-button">View</Link>
+                                <Link :href="route('subjects.quizzes.edit', {subject: subject.slug, quiz: quiz.slug})" class="primary-button">View</Link>
                             </div>
                         </div>
                             

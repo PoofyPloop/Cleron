@@ -12,12 +12,15 @@ import Modal from '@/Components/Modal.vue';
 import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
-const contentInput = ref('');
-const confirmingCommentDeletion = ref(false);
-const editComment = ref(null);
+const props = defineProps({
+    thread: {
+        type: Object,
+        required: true,
+    },
+});
 
 const form = useForm({
-    content: ''
+    body: '',
 });
 
 const confirmCommentDeletion = () => {
@@ -85,11 +88,11 @@ const closeModal = () => {
 </script>
 
 <template>
-    <Head title="Discussion" />
+    <Head :title="`Thread - ${thread.title}`" />
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Discussion</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Thread</h2>
         </template>
 
         <div class="py-12">
@@ -97,14 +100,13 @@ const closeModal = () => {
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">
                         <div class="pb-4">
-                            <h1 class="text-2xl font-semibold">{{ $page.props.discussion.title }}</h1>
+                            <h1 class="text-2xl font-semibold">{{ thread.title }}</h1>
                             <p class="text-sm text-gray-400">
-                                Published by {{ $page.props.discussion.user.name }}
+                                Published by {{ thread.user.name }}
                             </p>
                         </div>
 
-                        <div class="disc-content">
-                            {{ $page.props.discussion.content }}
+                        <div class="disc-content" v-html="thread.description">
                         </div>
                     </div>
                 </div>
@@ -146,7 +148,7 @@ const closeModal = () => {
                         </form>
                     </div>
 
-                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 mb-4" v-for="comment in $page.props.discussion.comments" :key="comment.id">
+                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 mb-4" v-for="comment in thread.comments" :key="comment.id">
                         <div v-if="!editComment">
                             <p class="text-sm text-gray-400 pb-2">
                                 {{ comment.user.name }} | {{ new Date(comment.created_at).toDateString() }}

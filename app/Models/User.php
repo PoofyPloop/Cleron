@@ -3,11 +3,13 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Models\Answer;
+use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Laravel\Sanctum\HasApiTokens;
+use \Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 // StAuth10244: I Rawad Haddad, 000777218 certify that this material is my original work. No other person's work has been used without due acknowledgement. I have not made my work available to anyone else.
 
@@ -46,15 +48,47 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     /**
-     * A user can have many messages
+     * A user can have many discussions
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function messages()
+    public function threads(): HasMany
     {
-        return $this->hasMany(Message::class, 'sender_id');
+        return $this->hasMany(Thread::class);
+    }
+
+    /**
+     * A user can have many comments
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function comments(): HasMany
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    /**
+     * A user can have many answers
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function answers(): HasMany
+    {
+        return $this->hasMany(Answer::class);
+    }
+
+    /**
+     * A user can have many quizzes
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function quizzes(): HasMany
+    {
+        return $this->hasMany(Quiz::class);
     }
 }

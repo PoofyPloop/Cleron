@@ -22,8 +22,9 @@ const form = useForm({
  */
 const saveQuestion = () => {
     form.post(
-        route("quizzes.questions.update", {
-            quiz: usePage().props.quiz.id,
+        route("subjects.quizzes.questions.update", {
+            subject: route().params.subject,
+            quiz: route().params.quiz,
             question: props.question.id,
         }),
         {
@@ -47,22 +48,14 @@ const addOption = () => {
 };
 
 /**
- * removes an option block from the multiple choice
- */
-const removeOption = (index) => {
-    if (form.options.length <= 2) return;
-    form.options.splice(index, 1);
-};
-
-/**
  * Deletes question of choice.
  * @returns {void}
  */
 const deleteQuestion = () => {
     form.delete(
         route("subjects.quizzes.questions.destroy", {
-            subject: usePage().props.quiz.subject_id,
-            quiz: usePage().props.quiz.id,
+            subject: route().params.subject,
+            quiz: route().params.quiz,
             question: props.question.id,
         }),
         {

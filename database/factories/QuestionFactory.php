@@ -68,7 +68,7 @@ class QuestionFactory extends Factory
                 "textarea"
             ]),
             'points' => fake()->numberBetween(0, 100),
-            'quiz_id' => Quiz::factory(),
+            'quiz_id' => Quiz::all()->count() ? Quiz::all()->random()->id : Quiz::factory(),
         ];
     }
 }

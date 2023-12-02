@@ -19,8 +19,10 @@ return new class extends Migration
             $table->foreignId('category_id')->constrained()->cascadeOnDelete();
             $table->foreignId('subject_id')->constrained()->cascadeOnDelete();
             $table->string('title');
-            $table->timestamp('start_time')->nullable();
-            $table->timestamp('end_time')->nullable();
+            $table->string('slug')->unique();
+            $table->text('description')->nullable();
+            $table->timestamp('started_at')->nullable();
+            $table->timestamp('ended_at')->nullable();
             $table->timestamps();
         });
     }

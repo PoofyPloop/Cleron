@@ -1,45 +1,38 @@
 <!-- StAuth10244: I Rawad Haddad, 000777218 certify that this material is my original work. No other person's work has been used without due acknowledgement. I have not made my work available to anyone else. -->
 
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, Link } from '@inertiajs/vue3';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
-import { useForm, usePage } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+import { Head, Link } from "@inertiajs/vue3";
+import InputError from "@/Components/InputError.vue";
+import InputLabel from "@/Components/InputLabel.vue";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
+import TextInput from "@/Components/TextInput.vue";
+import { useForm, usePage } from "@inertiajs/vue3";
+import { ref } from "vue";
 
-const titleInput = ref('');
-const subjectInput = ref(null);
-const categoryInput = ref(null);
-const subjects = usePage().props.subjects;
-const categories = usePage().props.categories;
 
-const form = useForm({
-    title: '',
-    subject: null,
-    category: null
+const props = defineProps({
+    subjects: {
+        type: Array,
+        required: true,
+    },
+    categories: {
+        type: Array,
+        required: true,
+    },
 });
 
-const storeQuiz = () => {
-    form.post(route('quiz.store'), {
-        preserveScroll: true,
-        onSuccess: () => {
-            form.reset()
-        },
-        onError: () => {
-            if (form.errors.title) {
-                titleInput.value.focus();
-            }
-            if (form.errors.subject) {
-                subjectInput.value.focus();
-            }
-            if (form.errors.category) {
-                categoryInput.value.focus();
-            }
-        },
-    });
+const form = useForm({
+    title: "",
+    description: "",
+    subject_id: "",
+    category_id: "",
+});
+
+const submit = () => {
+    form.post(
+        route("subjects.quizzes.store", { subject: route().params.subject })
+    );
 };
 </script>
 
@@ -48,7 +41,9 @@ const storeQuiz = () => {
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Quiz - Create</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                Quiz - Create
+            </h2>
         </template>
 
         <div class="py-12">
@@ -57,13 +52,23 @@ const storeQuiz = () => {
                     <div class="p-6 text-gray-900">
                         <div class="flex items-center justify-between">
                             <h2 class="title-h2">Create Quiz</h2>
-                            <Link href="/quizzes" class="text-sm text-primary-500">Back to all quiz</Link>
+                            <Link
+                                :href="route('subjects.quizzes.index', { subject: route().params.subject })"
+                                class="text-sm text-primary-500"
+                                >Back to all quiz</Link
+                            >
                         </div>
 
                         <div>
-                            <form @submit.prevent="storeQuiz" class="mt-6 space-y-6">
+                            <form
+                                @submit.prevent="submit"
+                                class="mt-6 space-y-6"
+                            >
                                 <div>
-                                    <InputLabel for="title" value="Quiz Title" />
+                                    <InputLabel
+                                        for="title"
+                                        value="Quiz Title"
+                                    />
 
                                     <TextInput
                                         id="title"
@@ -73,37 +78,69 @@ const storeQuiz = () => {
                                         class="mt-1 block w-full"
                                     />
 
-                                    <InputError :message="form.errors.title" class="mt-2" />
+                                    <InputError
+                                        :message="form.errors.title"
+                                        class="mt-2"
+                                    />
                                 </div>
 
                                 <div>
                                     <InputLabel for="subject" value="Subject" />
 
-                                    <select ref="subjectInput" v-model="form.subject">
-                                        <option value="null" selected>Select a subject</option>
-                                        <option v-for="subject in subjects" :key="subject.id" :value="subject.id">
+                                    <select
+                                        ref="subjectInput"
+                                        v-model="form.subject_id"
+                                    >
+                                        <option value="null" selected>
+                                            Select a subject
+                                        </option>
+                                        <option
+                                            v-for="subject in subjects"
+                                            :key="subject.id"
+                                            :value="subject.id"
+                                        >
                                             {{ subject.title }}
                                         </option>
                                     </select>
 
-                                    <InputError :message="form.errors.subject" class="mt-2" />
+                                    <InputError
+                                        :message="form.errors.subject"
+                                        class="mt-2"
+                                    />
                                 </div>
 
                                 <div>
-                                    <InputLabel for="category" value="Category" />
+                                    <InputLabel
+                                        for="category"
+                                        value="Category"
+                                    />
 
-                                    <select ref="categoryInput" v-model="form.category">
-                                        <option value="null" selected>Select a category</option>
-                                        <option v-for="category in categories" :key="category.id" :value="category.id">
+                                    <select
+                                        ref="categoryInput"
+                                        v-model="form.category_id"
+                                    >
+                                        <option value="null" selected>
+                                            Select a category
+                                        </option>
+                                        <option
+                                            v-for="category in categories"
+                                            :key="category.id"
+                                            :value="category.id"
+                                        >
                                             {{ category.title }}
                                         </option>
                                     </select>
 
-                                    <InputError :message="form.errors.category" class="mt-2" />
+                                    <InputError
+                                        :message="form.errors.category"
+                                        class="mt-2"
+                                    />
                                 </div>
 
                                 <div class="flex items-center gap-4">
-                                    <PrimaryButton :disabled="form.processing">Save</PrimaryButton>
+                                    <PrimaryButton :disabled="form.processing"
+                                        >Save</PrimaryButton
+                                    >
 
                                     <Transition
                                         enter-active-class="transition ease-in-out"
@@ -111,7 +148,12 @@ const storeQuiz = () => {
                                         leave-active-class="transition ease-in-out"
                                         leave-to-class="opacity-0"
                                     >
-                                        <p v-if="form.recentlySuccessful" class="text-sm text-gray-600">Saved.</p>
+                                        <p
+                                            v-if="form.recentlySuccessful"
+                                            class="text-sm text-gray-600"
+                                        >
+                                            Saved.
+                                        </p>
                                     </Transition>
                                 </div>
                             </form>

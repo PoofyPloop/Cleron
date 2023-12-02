@@ -1,0 +1,95 @@
+<?php
+
+namespace App\Http\Controllers;
+
+// StAuth10244: I Rawad Haddad, 000777218 certify that this material is my original work. No other person's work has been used without due acknowledgement. I have not made my work available to anyone else.
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+use App\Models\Thread;
+use Illuminate\Support\Str;
+
+class ThreadController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+
+        return Inertia::render('Threads/Index', [
+            'threads' => Thread::with('user')->paginate()
+        ]);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        return Inertia::render('Threads/Create');
+    }
+
+    /**@s
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'title' => 'required',
+            'description' => 'nullable',
+            'image' => 'nullable|url',
+        ]);
+
+        $validated['slug'] = Str::slug($validated['title']);
+
+        $thread = $request->user()->threads()->create($validated);
+
+        return redirect()->back();
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(Thread $thread)
+    {
+        return Inertia::render('Threads/Show', [
+            'thread' => $thread->load('user', 'comments.user'),
+        ]);
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(Thread $thread)
+    {
+        return Inertia::render('Threads/Edit', [
+            'thread' => $thread,
+        ]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, Thread $thread)
+    {
+        $validated = $request->validate([
+            'title' => 'required',
+            'description' => 'nullable',
+            'image' => 'nullable|url',
+        ]);
+
+        $thread->update($validated);
+
+        return redirect()->back();
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Thread $thread)
+    {
+        $thread->delete();
+
+        return redirect()->back();
+    }
+}

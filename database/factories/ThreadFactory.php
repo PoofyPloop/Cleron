@@ -9,9 +9,9 @@ use App\Models\User;
 use App\Models\Question;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Answer>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Thread>
  */
-class AnswerFactory extends Factory
+class ThreadFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -21,10 +21,16 @@ class AnswerFactory extends Factory
     public function definition(): array
     {
         return [
-            'value' => fake()->unique()->word(),
-            'question_id' => Question::all()->count() ? Question::all()->random()->id : Question::factory(),
+            'title' => $this->faker->sentence,
+            'slug' => $this->faker->slug,
+            'description' => $this->faker->realText(200),
             'user_id' => User::factory(),
-            'score' => fake()->numberBetween(0, 100),
+            'image' => $this->faker->optional()->imageUrl(),
+            'metadata' => [
+                'views' => $this->faker->numberBetween(0, 1000),
+                'likes' => $this->faker->numberBetween(0, 1000),
+                'dislikes' => $this->faker->numberBetween(0, 1000),
+            ]
         ];
     }
 }

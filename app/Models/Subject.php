@@ -30,4 +30,14 @@ class Subject extends Model
     public function user(): BelongsTo {
         return $this->belongsTo(User::class);
     }
+
+    public function categories(): HasMany
+    {
+        return $this->hasMany(Category::class);
+    }
+
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
 }

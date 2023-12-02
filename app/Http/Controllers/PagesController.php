@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 // StAuth10244: I Rawad Haddad, 000777218 certify that this material is my original work. No other person's work has been used without due acknowledgement. I have not made my work available to anyone else.
 
 use Illuminate\Http\Request;
@@ -20,22 +21,22 @@ class PagesController extends Controller
     {
         $search = request('search');
         $type = request('type');
-        $user_id = auth()->user()->id;
-
-        $quizzes = Quiz::where('user_id', $user_id)
-        ->orderBy('id', 'desc')
-        ->when($search, function ($query) use ($search){
-            $query->where('title', 'like', '%' . $search . '%');
-        })
-        ->get();
-
-        $discussions = Discussion::where('user_id', $user_id)
-        ->orderBy('id', 'desc')
-        ->get();
 
         return Inertia::render('Home', [
-            'quizzes' => $quizzes,
-            'discussions' => $discussions
+            'statistics' => [
+                'quizzes' => request()->user()->quizzes()->count(),
+                'threads' => request()->user()->threads()->count(),
+                'comments' => request()->user()->comments()->count(),
+                'average' => request()->user()->answers()->avg('score'),
+            ],
+
+            'quizzes' => request()->user()->quizzes()
+                ->with(['category', 'subject'])
+                ->where('title', 'LIKE', "%$search%")
+                ->orderBy('created_at', 'DESC')
+                ->paginate(10),
+
+                'subject' => Subject::first(),
         ]);
     }
 

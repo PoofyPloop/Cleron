@@ -2,18 +2,20 @@
 
 // StAuth10244: I Rawad Haddad, 000777218 certify that this material is my original work. No other person's work has been used without due acknowledgement. I have not made my work available to anyone else.
 
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\QuizController;
-use App\Http\Controllers\QuestionController;
-use App\Http\Controllers\PagesController;
-use App\Http\Controllers\DiscussionController;
-use App\Http\Controllers\ChatsController;
-use App\Http\Controllers\AnswerController;
-use App\Http\Controllers\SubjectController;
-
-use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Application;
+use App\Http\Controllers\QuizController;
+use App\Http\Controllers\ChatsController;
+use App\Http\Controllers\PagesController;
+use App\Http\Controllers\AnswerController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SubjectController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\QuestionController;
+use App\Http\Controllers\ThreadController;
+use App\Http\Controllers\CommentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,8 +38,8 @@ Route::get('/', function () {
 });
 
 Route::get('/home', [PagesController::class, 'home'])
-->middleware(['auth', 'verified'])
-->name('dashboard');
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
 Route::get('/quiz/demo', [QuizController::class, 'demo'])->name('quiz.demo');
 
@@ -47,24 +49,17 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::resource('subjects', SubjectController::class);
-
+    Route::resource('subjects.categories', CategoryController::class);
     Route::resource('subjects.quizzes', QuizController::class);
-    Route::get('/subjects/{subject}/quizzes/{quiz}/results', [QuizController::class,"result"]);
+    Route::post('/subjects/{subject}/quizzes/{quiz}/submit', [QuizController::class, "submit"])->name('subjects.quizzes.submit');
+    Route::get('/subjects/{subject}/quizzes/{quiz}/complete', [QuizController::class, "complete"])->name('subjects.quizzes.complete');
+    Route::get('/subjects/{subject}/quizzes/{quiz}/results', [QuizController::class, "result"])->name('subjects.quizzes.result');
+    Route::resource('subjects.quizzes.reports', ReportController::class);
     Route::resource('subjects.quizzes.questions', QuestionController::class);
     Route::resource('subjects.quizzes.questions.answers', AnswerController::class);
 
-    // discussions/comment
-    Route::post('/discussions/{id}/comment', [DiscussionController::class, 'comment'])->name('discussions.comment');
-    Route::put('/discussions/{id}/comment/{cid}', [DiscussionController::class, 'commentUpdate'])->name('discussions.comment.update');
-    Route::delete('/discussions/{id}/comment/{cid}', [DiscussionController::class, 'commentDelete'])->name('discussions.comment.delete');
-    
-    // discussions
-    Route::get('/discussions', [DiscussionController::class, 'index'])->name('discussions');
-    Route::get('/discussions/create', [DiscussionController::class, 'create'])->name('discussions.create');
-    Route::get('/discussions/{id}', [DiscussionController::class, 'show'])->name('discussions.show');
-    Route::post('/discussions', [DiscussionController::class, 'store'])->name('discussions.store');
-    Route::put('/discussions/{id}', [DiscussionController::class, 'update'])->name('discussions.update');
-    Route::delete('/discussions/{id}', [DiscussionController::class, 'destroy'])->name('discussions.destroy');
+    Route::resource('threads', ThreadController::class);
+    Route::resource('threads.comments', CommentController::class);
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

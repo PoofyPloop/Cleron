@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Subject>
  */
 class SubjectFactory extends Factory
 {
@@ -20,7 +20,7 @@ class SubjectFactory extends Factory
     public function definition(): array
     {
         return [
-            'title' => fake()->name(),
+            'title' => fake()->realText(),
             'slug' => fake()->unique()->slug(),
         ];
     }

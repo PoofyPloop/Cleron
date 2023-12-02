@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Question extends Model
 {
     use HasFactory;
-    
+
     /**
      * The attributes that are mass assignable.
      *
@@ -26,7 +26,7 @@ class Question extends Model
         'quiz_id'
     ];
 
-        /**
+    /**
      * The attributes that should be cast.
      *
      * @var array<string, string>
@@ -37,29 +37,28 @@ class Question extends Model
         'updated_at' => 'datetime',
     ];
 
+    /**
+     * Get the quiz that owns the question.
+     * 
+     * @return BelongsTo - The quiz that owns the question.
+     */
     public function quiz(): BelongsTo
     {
         return $this->belongsTo(Quiz::class);
     }
 
+    /**
+     * Get the answers for the question.
+     * 
+     * @return HasMany - The answers for the question.
+     */
     public function answers(): HasMany
     {
         return $this->hasMany(Answer::class);
     }
 
-    /**
-     * 
-     */
-    public function getScore(?User $user = null) {
-        $score = 0;
-        $this->answers()->when($user, function($query) use($user) {
-            $query->where('user_id', $user->id);
-        })->get()->each(function (Answer $answer) use($score) {
-            if ($answer->value == $this->value) {
-                $score += $this->points;
-            }
-        });
-
-        return $score;
+    public function getAnswerAttribute(): Answer
+    {
+        return $this->answers()->where('user_id', auth()->id())->first();
     }
 }

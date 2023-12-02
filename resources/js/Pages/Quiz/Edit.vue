@@ -6,64 +6,70 @@ import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import TextInput from "@/Components/TextInput.vue";
-import { Head, Link, useForm, usePage } from "@inertiajs/vue3";
-import { ref } from "vue";
+import { Head, Link, useForm, usePage, router } from "@inertiajs/vue3";
+import { ref, watch } from "vue";
 import QuestionCard from "./Partials/QuestionCard.vue";
 
-const titleInput = ref(usePage().props.quiz.title);
-const subjectInput = ref(usePage().props.quiz.subject_id);
-const categoryInput = ref(usePage().props.quiz.category_id);
-const subjects = usePage().props.subjects;
-const categories = usePage().props.categories;
+const props = defineProps({
+    quiz: Object,
+    subjects: Array,
+    categories: Array,
+});
 
 const form = useForm({
-    title: usePage().props.quiz.title,
-    subject: usePage().props.quiz.subject_id,
-    category: usePage().props.quiz.category_id,
+    title: props.quiz.title,
+    description: props.quiz.description,
+    subject_id: props.quiz.subject_id,
+    category_id: props.quiz.category_id,
+    questions: props.quiz.questions,
 });
-
-const updateQuiz = () => {
-    form.put(route("quiz.update", usePage().props.quiz.id), {
-        preserveScroll: true,
-        onSuccess: () => {
-            form.reset();
-        },
-        onError: () => {
-            if (form.errors.title) {
-                titleInput.value.focus();
-            }
-            if (form.errors.subject) {
-                subjectInput.value.focus();
-            }
-            if (form.errors.category) {
-                categoryInput.value.focus();
-            }
-        },
-    });
-};
-
-const questionForm = useForm({
-    label: "New Question",
-    value: "",
-    type: "text",
-    options: [],
-    points: 1,
-});
-
-const questions = ref(usePage().props.quiz.questions);
 
 const addQuestion = () => {
-    questionForm.post(
+    router.post(
         route("subjects.quizzes.questions.store", {
-            subject: usePage().props.quiz.subject_id,
-            quiz: usePage().props.quiz.id,
+            subject: route().params.subject,
+            quiz: route().params.quiz,
         }),
         {
-            preserveScroll: true,
+            label: "New Question",
+            value: null,
+            type: "radio",
+            options: [
+                {
+                    label: "Option 1",
+                    value: null,
+                },
+                {
+                    label: "Option 2",
+                    value: null,
+                },
+                {
+                    label: "Option 3",
+                    value: null,
+                },
+                {
+                    label: "Option 4",
+                    value: null,
+                },
+            ],
+        },
+        {
             only: ["quiz"],
         }
     );
 };
+
+watch(
+    () => props.quiz,
+    (quiz) => {
+        form.title = quiz.title;
+        form.description = quiz.description;
+        form.subject_id = quiz.subject_id;
+        form.category_id = quiz.category_id;
+        form.questions = quiz.questions;
+    }
+);
+
 </script>
 
 <template>
@@ -83,7 +89,7 @@ const addQuestion = () => {
                         <div class="flex items-center justify-between">
                             <h2 class="title-h2">Update Quiz</h2>
                             <Link
-                                href="/subjects"
+                                :href="route('subjects.index')"
                                 class="text-sm font-semibold text-blue-700 hover:text-gray-500"
                             >
                                 <svg
@@ -133,7 +139,7 @@ const addQuestion = () => {
 
                                     <select
                                         ref="subjectInput"
-                                        v-model="form.subject"
+                                        v-model="form.subject_id"
                                     >
                                         <option value="null" selected>
                                             Select a subject
@@ -161,7 +167,7 @@ const addQuestion = () => {
 
                                     <select
                                         ref="categoryInput"
-                                        v-model="form.category"
+                                        v-model="form.category_id"
                                     >
                                         <option value="null" selected>
                                             Select a category
@@ -210,14 +216,12 @@ const addQuestion = () => {
                             <div class="mt-2">
                                 <div
                                     class="bg-white overflow-hidden shadow-sm sm:rounded-lg mt-6"
-                                    v-for="question in questions"
+                                    v-for="question in form.questions"
                                     :key="question"
                                 >
-                                    <div class="p-6 text-gray-900">
-                                        <QuestionCard
-                                            :question="question"
-                                        ></QuestionCard>
-                                    </div>
+                                    <QuestionCard
+                                        :question="question"
+                                    ></QuestionCard>
                                 </div>
 
                                 <div class="flex items-center">

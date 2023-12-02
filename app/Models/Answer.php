@@ -18,6 +18,7 @@ class Answer extends Model
      */
     protected $fillable = [
         'value',
+        'score',
         'question_id',
         'user_id',
     ];

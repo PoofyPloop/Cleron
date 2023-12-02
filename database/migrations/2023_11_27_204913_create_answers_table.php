@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string("value");
             $table->foreignId('question_id')->constrained()->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->integer('score')->default(0);
             $table->timestamps();
         });
     }

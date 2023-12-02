@@ -23,7 +23,7 @@ watch(() => searchOptions.value, async (newSearch, oldSearch) => {
 const pageLinks = [
     { route: route('dashboard'), label: 'Home' },
     { route: route('subjects.index'), label: 'Subjects' },
-    { route: route('discussions'), label: 'Discussions' },
+    { route: route('threads.index'), label: 'Threads' },
 ];
 </script>
 
