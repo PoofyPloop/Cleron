@@ -4,7 +4,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import DangerButton from "@/Components/DangerButton.vue";
-import DangerButton from "@/Components/Modal.vue";
 
 const props = defineProps(['questions']);
 
