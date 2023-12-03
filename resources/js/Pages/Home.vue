@@ -93,7 +93,7 @@ const props = defineProps({
                             <div class="p-6 text-gray-900">
                                 <div class="flex justify-between items-center">
                                     <p>Access Quizzes</p>
-                                    <Link href="/subjects/quizzes" class="primary-button" >View</Link>
+                                    <Link :href="route('subjects.quizzes.index', { subject: subject.slug})" class="primary-button" >View</Link>
                                 </div>
 
                                 <div class="flex justify-between items-center mt-1">
