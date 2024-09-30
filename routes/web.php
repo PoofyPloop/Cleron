@@ -1,6 +1,5 @@
 <?php
 
-// StAuth10244: I Rawad Haddad, 000777218 certify that this material is my original work. No other person's work has been used without due acknowledgement. I have not made my work available to anyone else.
 
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
@@ -54,9 +53,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/subjects/{subject}/quizzes/{quiz}/submit', [QuizController::class, "submit"])->name('subjects.quizzes.submit');
     Route::get('/subjects/{subject}/quizzes/{quiz}/complete', [QuizController::class, "complete"])->name('subjects.quizzes.complete');
     Route::get('/subjects/{subject}/quizzes/{quiz}/results', [QuizController::class, "result"])->name('subjects.quizzes.result');
+    Route::delete('/subjects/{subject}/quizzes/{quiz}/destroy', [QuizController::class, 'destroy'])->name('quiz.destroy');
     Route::resource('subjects.quizzes.reports', ReportController::class);
     Route::resource('subjects.quizzes.questions', QuestionController::class);
     Route::resource('subjects.quizzes.questions.answers', AnswerController::class);
+
 
     Route::resource('threads', ThreadController::class);
     Route::resource('threads.comments', CommentController::class);
