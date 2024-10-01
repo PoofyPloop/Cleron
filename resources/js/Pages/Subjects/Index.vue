@@ -16,7 +16,8 @@ const props = defineProps(['subjects']);
 
         <div class="mx-96">
             <div class="bg-white rounded-lg p-5 mt-10 mb-5 flex justify-center border">
-                <button class="mx-10 text-lg">Math</button>
+                <button class="mx-10 text-lg">Math</button> 
+                <!-- i want to turn this html into 2 dropdown menus subjects and categories, subjects will have hold what subject it is  -->
                 <button class="mx-10 text-lg">Science</button>
                 <button class="mx-10 text-lg">Geometry</button>
             </div>
@@ -26,6 +27,7 @@ const props = defineProps(['subjects']);
             <div class="flex flex-wrap gap-2 w-full">
                 <div class="border py-5 pl-5 bg-white rounded-xl" v-for="subject in subjects" :key="subject.id">
                     <p>{{ subject?.title }}</p>
+                    <p>{{ category?.title }}</p>
                     <div class="" v-for="quiz in subject.quizzes" :key="quiz.id">
                         
                         <div class="col-span-2">
@@ -36,11 +38,11 @@ const props = defineProps(['subjects']);
     
                         <div class="flex items-center justify-center"> 
                             <div class="flex justify-center items-center" v-if="$page.props.auth.user.role == 1">
-                                <Link :href="route('subjects.quizzes.show', {subject: subject.slug, quiz: quiz.slug})" class="primary-button">Take Quiz</Link>
+                                <Link :href="route('quizzes.show', {subject: subject.slug, quiz: quiz.slug})" class="primary-button">Take Quiz</Link>
                             </div>
                                 
                             <div v-else>
-                                <Link :href="route('subjects.quizzes.edit', {subject: subject.slug, quiz: quiz.slug})" class="primary-button">View</Link>
+                                <Link :href="route('quizzes.edit', {subject: subject.slug, quiz: quiz.slug})" class="primary-button">View</Link>
                             </div>
                         </div>
                             

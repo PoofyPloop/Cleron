@@ -25,7 +25,7 @@ const form = useForm({
 
 const addQuestion = () => {
     router.post(
-        route("subjects.quizzes.questions.store", {
+        route("quizzes.questions.store", {
             subject: route().params.subject,
             quiz: route().params.quiz,
         }),
@@ -88,7 +88,7 @@ watch(
                         <div class="flex items-center justify-between">
                             <h2 class="title-h2">Update Quiz</h2>
                             <Link
-                                :href="route('subjects.index')"
+                                :href="route('index')"
                                 class="text-sm font-semibold text-blue-700 hover:text-gray-500"
                             >
                                 <svg

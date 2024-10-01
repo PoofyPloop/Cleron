@@ -23,7 +23,23 @@ const deleteQuiz = (id) => {
         onError: () => {},
         onFinish: () => form.reset(),
     });
+    console.log(id);
 };
+
+// const deleteTest = (id) => {
+//     form.delete(route('quiz.destroy', id), {
+//         preserveScroll: true,
+//         onSuccess: () => {
+//             closeModal();
+//         },
+//         onError: (errors) => {
+//             console.log('An error occurred', errors);
+//         },
+//         onFinish: () => {
+//             form.reset();
+//         }
+//     });
+// };
 
 const closeModal = () => {
     confirmingQuizDeletion.value = false;
@@ -57,7 +73,8 @@ const closeModal = () => {
                             <div class="flex items-center space-x-2">
                                 <a :href="`/quiz/${quiz.id}`" class="primary-button">Questions</a>
 
-                                <a :href="`/quiz/${quiz.id}/edit`" class="primary-button">Edit Quiz</a>
+                                <!-- <a :href="`/quiz/${quiz.id}/edit`" class="primary-button">Edit Quiz</a> -->
+                                <a href="{{ route('quizzes.edit', $quiz->id) }}" class="primary-button">Edit Quiz</a>
 
                                 <DangerButton @click="confirmQuizDeletion">Delete Quiz</DangerButton>
 
@@ -69,7 +86,6 @@ const closeModal = () => {
 
                                         <div class="mt-6 flex justify-end">
                                             <SecondaryButton @click="closeModal"> Cancel </SecondaryButton>
-
                                             <DangerButton
                                                 class="ml-3"
                                                 :class="{ 'opacity-25': form.processing }"
