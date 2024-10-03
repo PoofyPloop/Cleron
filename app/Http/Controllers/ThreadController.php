@@ -16,7 +16,7 @@ class ThreadController extends Controller
     {
 
         return Inertia::render('Threads/Index', [
-            'threads' => Thread::with('user')->paginate()
+            'threads' => Thread::with('user', 'comments')->paginate()
         ]);
     }
 

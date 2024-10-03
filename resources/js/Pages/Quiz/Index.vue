@@ -90,7 +90,7 @@ const closeModal = () => {
                                                 class="ml-3"
                                                 :class="{ 'opacity-25': form.processing }"
                                                 :disabled="form.processing"
-                                                @click="deleteQuiz(quiz.id)"
+                                                @click="deleteTest(quiz.id)"
                                             >
                                                 Delete Quiz
                                             </DangerButton>

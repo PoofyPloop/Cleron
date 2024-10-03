@@ -25,7 +25,7 @@ const form = useForm({
 
 const addQuestion = () => {
     router.post(
-        route("quizzes.questions.store", {
+        route("subjects.quizzes.questions.store", {
             subject: route().params.subject,
             quiz: route().params.quiz,
         }),
@@ -69,6 +69,25 @@ watch(
     }
 );
 
+// form.post(
+//         route("subjects.quizzes.store", { subject: route().params.subject })
+//     );
+
+const updateQuiz = () => {
+    console.log(props.quiz)
+    form.put(route('subjects.quizzes.update', {
+        subject: props.quiz.subject_id, 
+        quiz: props.quiz.id              
+    }), {
+        onSuccess: () => {
+            console.log('Quiz updated successfully');
+        },
+        onError: (errors) => {
+            console.error('Update failed:', errors);
+        }
+    });
+};
+
 </script>
 
 <template>
@@ -88,7 +107,7 @@ watch(
                         <div class="flex items-center justify-between">
                             <h2 class="title-h2">Update Quiz</h2>
                             <Link
-                                :href="route('index')"
+                                :href="route('subjects.index')"
                                 class="text-sm font-semibold text-blue-700 hover:text-gray-500"
                             >
                                 <svg
@@ -187,9 +206,9 @@ watch(
                                 </div>
 
                                 <div class="flex items-center gap-4">
-                                    <PrimaryButton :disabled="form.processing"
-                                        >Update</PrimaryButton
-                                    >
+                                    <PrimaryButton :disabled="form.processing">
+                                        Update
+                                    </PrimaryButton>
 
                                     <Transition
                                         enter-active-class="transition ease-in-out"

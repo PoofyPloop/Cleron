@@ -174,9 +174,9 @@ class QuizController extends Controller
     {
         echo "Quiz Controller Delete Reached";
 
-        $subject = Subject::where('slug', request('subject_slug'))->firstOrFail();
+        // $subject = Subject::where('slug', request('subject_slug'))->firstOrFail();
     
-        $quiz = Quiz::findOrFail($quiz);
+        // $quiz = Quiz::findOrFail($quiz);
 
         $quiz->delete();
 

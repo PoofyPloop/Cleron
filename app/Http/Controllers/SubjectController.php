@@ -14,9 +14,13 @@ class SubjectController extends Controller
     public function index()
     {
         return Inertia::render('Subjects/Index', [
-            'subjects' => fn() => Subject::with('quizzes.user')->get()
+            // 'subjects' => fn() => Subject::with(['quizzes.user', 'quizzes.category', 'quizzes.subject'])->paginate(15), // Fetches 10 records per page
+            // 'categories' => fn() => Category::select('subject_id', 'title')->get(),
+            'subjects' => fn() => Subject::with(['quizzes.user', 'quizzes.category', 'quizzes.subject'])->get(),
+            // 'categories' => fn() => Category::select('subject_id', 'title')->get(),
         ]);
     }
+
 
     /**
      * Show the form for creating a new resource.

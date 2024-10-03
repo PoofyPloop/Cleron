@@ -49,17 +49,13 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('subjects', SubjectController::class);
     Route::resource('subjects.categories', CategoryController::class);
-    // Route::resource('subjects.quizzes', QuizController::class);
-    // Route::post('/subjects/quizzes/{quiz}/submit', [QuizController::class, "submit"])->name('subjects.quizzes.submit');
-    // Route::get('/subjects/quizzes/{quiz}/complete', [QuizController::class, "complete"])->name('subjects.quizzes.complete');
-    // Route::get('/subjects/quizzes/{quiz}/results', [QuizController::class, "result"])->name('subjects.quizzes.result');
-    // Route::delete('/subjects/quizzes/{quiz}/destroy', [QuizController::class, 'destroy'])->name('quiz.destroy');
-
-    Route::resource('quizzes', QuizController::class);
-    Route::post('/quizzes/{quiz}/submit', [QuizController::class, "submit"])->name('quizzes.submit');
-    Route::get('/quizzes/{quiz}/complete', [QuizController::class, "complete"])->name('quizzes.complete');
-    Route::get('/quizzes/{quiz}/results', [QuizController::class, "result"])->name('quizzes.result');
-    Route::delete('/quizzes/{quiz}/destroy', [QuizController::class, 'destroy'])->name('quizzes.destroy');
+    
+    Route::resource('subjects.quizzes', QuizController::class);
+    Route::post('/subjects/{subject}/quizzes/{quiz}/submit', [QuizController::class, "submit"])->name('subjects.quizzes.submit');
+    Route::put('subjects/{subject}/quizzes/{quiz}', [QuizController::class, 'update'])->name('subjects.quizzes.update');
+    Route::get('/subjects/{subject}/quizzes/{quiz}/complete', [QuizController::class, "complete"])->name('subjects.quizzes.complete');
+    Route::get('/subjects/{subject}/quizzes/{quiz}/results', [QuizController::class, "result"])->name('subjects.quizzes.result');
+    Route::delete('/subjects/{subject}/quizzes/{quiz}/destroy', [QuizController::class, 'destroy'])->name('quiz.destroy');
 
     Route::resource('subjects.quizzes.reports', ReportController::class);
     Route::resource('subjects.quizzes.questions', QuestionController::class);

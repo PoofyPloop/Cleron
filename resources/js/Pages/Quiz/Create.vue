@@ -30,7 +30,7 @@ const form = useForm({
 
 const submit = () => {
     form.post(
-        route("quizzes.store", { subject: route().params.subject })
+        route("subjects.quizzes.store", { subject: route().params.subject })
     );
 };
 </script>
@@ -52,7 +52,7 @@ const submit = () => {
                         <div class="flex items-center justify-between">
                             <h2 class="title-h2">Create Quiz</h2>
                             <Link
-                                :href="route('quizzes.index', { subject: route().params.subject })"
+                                :href="route('subjects.quizzes.index', { subject: route().params.subject })"
                                 class="text-sm text-primary-500"
                                 >Back to all quiz</Link
                             >

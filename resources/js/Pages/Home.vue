@@ -92,12 +92,12 @@ const props = defineProps({
                             <div class="p-6 text-gray-900">
                                 <div class="flex justify-between items-center">
                                     <p>Access Quizzes</p>
-                                    <Link :href="route('quizzes.index', { subject: subject.slug})" class="primary-button" >View</Link>
+                                    <Link :href="route('subjects.quizzes.index', { subject: subject.slug})" class="primary-button" >View</Link>
                                 </div>
 
                                 <div class="flex justify-between items-center mt-1">
                                     <p>Create Quiz</p>
-                                    <Link :href="route('quizzes.create', {subject: subject.slug})" class="primary-button p-1" >
+                                    <Link :href="route('subjects.quizzes.create', {subject: subject.slug})" class="primary-button p-1" >
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                                         </svg>

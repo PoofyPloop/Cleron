@@ -27,6 +27,15 @@ const confirmCommentDeletion = () => {
 };
 
 const storeComment = () => {
+    const discussionId = usePage().props.discussion?.id; // Use optional chaining to avoid errors if discussion is undefined
+    if (!discussionId) {
+        console.error("Discussion ID is undefined");
+        return;
+    }
+    
+    console.log("props: ", props.discussion.id);
+    console.log("disc: ", discussionId);
+
     form.post(route('discussions.comment', usePage().props.discussion.id), {
         preserveScroll: true,
         onSuccess: () => {

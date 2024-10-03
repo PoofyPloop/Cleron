@@ -20,7 +20,7 @@ const form = useForm({
  * Saves question
  */
 const saveQuestion = () => {
-    form.post(
+    form.patch(
         route("subjects.quizzes.questions.update", {
             subject: route().params.subject,
             quiz: route().params.quiz,
