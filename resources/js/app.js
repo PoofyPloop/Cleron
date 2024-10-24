@@ -20,7 +20,9 @@ createInertiaApp({
     progress: {
         color: '#4B5563',
     },
+
 });
+console.log("app.js log here")
 
 import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';

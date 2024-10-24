@@ -51,8 +51,22 @@ class ThreadController extends Controller
      */
     public function show(Thread $thread)
     {
+        $thread->load(['user', 'comments.user']);
+
+        // Ensure the comment data includes the slug
+        $comments = $thread->comments->map(function ($comment) {
+            return [
+                'id' => $comment->id,
+                'body' => $comment->body,
+                'slug' => $comment->slug, 
+                'user' => $comment->user,
+                'created_at' => $comment->created_at,
+            ];
+        });
+
         return Inertia::render('Threads/Show', [
-            'thread' => $thread->load('user', 'comments.user'),
+            'thread' => $thread,
+            'comments' => $comments, 
         ]);
     }
 

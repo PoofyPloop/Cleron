@@ -1,4 +1,3 @@
-
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import InputError from '@/Components/InputError.vue';
@@ -19,30 +18,30 @@ const props = defineProps({
 });
 
 const form = useForm({
-    body: '',
+    body: '', 
 });
+
+const editComment = ref(null);
+const confirmingCommentDeletion = ref(false);
 
 const confirmCommentDeletion = () => {
     confirmingCommentDeletion.value = true;
 };
 
 const storeComment = () => {
-    const discussionId = usePage().props.discussion?.id; // Use optional chaining to avoid errors if discussion is undefined
-    if (!discussionId) {
-        console.error("Discussion ID is undefined");
+    const discussionTitle = usePage().props.thread.title;
+    if (!discussionTitle) {
+        console.error("Discussion title is undefined");
         return;
     }
-    
-    console.log("props: ", props.discussion.id);
-    console.log("disc: ", discussionId);
 
-    form.post(route('discussions.comment', usePage().props.discussion.id), {
+    form.post(route('threads.comments.store', { thread: discussionTitle }), {
         preserveScroll: true,
         onSuccess: () => {
-            form.reset()
+            form.reset();
         },
         onError: () => {
-            if (form.errors.content) {
+            if (form.errors.body) {
                 contentInput.value.focus();
             }
         },
@@ -50,44 +49,60 @@ const storeComment = () => {
 };
 
 const editCommentData = (comment) => {
+    console.log(comment);  
+
     editComment.value = comment;
-    form.content = comment.content;
+    form.body = comment.body || '';  
 };
 
 const cancelEditComment = () => {
     editComment.value = null;
-    form.content = '';
+    form.body = ''; 
 };
 
 const updateComment = () => {
-    form.put(route('discussions.comment.update', {
-        id: usePage().props.discussion.id,
-        cid: editComment.value.id
+    console.log(form.body);
+
+    form.put(route('threads.comments.update', {
+        thread: usePage().props.thread.slug,
+        comment: editComment.value.slug,
     }), {
         preserveScroll: true,
         onSuccess: () => {
+            console.log('Comment updated successfully');  
             editComment.value = null;
-            form.reset()
+            form.reset();
         },
         onError: () => {
-            if (form.errors.content) {
+            console.error('Error updating comment');
+            if (form.errors.body) {
                 contentInput.value.focus();
             }
         },
     });
 };
 
+
 const deleteComment = (id) => {
-    form.delete(route('discussions.comment.delete', {
-        id: usePage().props.discussion.id,
-        cid: id
+    const threadSlug = usePage().props.thread.slug; 
+    if (!threadSlug) {
+        console.error("Thread slug is missing");
+        return;
+    }
+
+    form.delete(route('threads.comments.destroy', {
+        thread: threadSlug,  
+        comment: id  
     }), {
         preserveScroll: true,
         onSuccess: () => closeModal(),
-        onError: () => {},
+        onError: () => {
+            console.error("Error deleting comment");
+        },
         onFinish: () => form.reset(),
     });
 };
+
 
 const closeModal = () => {
     confirmingCommentDeletion.value = false;
@@ -114,8 +129,7 @@ const closeModal = () => {
                             </p>
                         </div>
 
-                        <div class="disc-content" v-html="thread.description">
-                        </div>
+                        <div class="disc-content" v-html="thread.description"></div>
                     </div>
                 </div>
 
@@ -132,11 +146,11 @@ const closeModal = () => {
                                 <TextareaInput
                                     id="content"
                                     ref="contentInput"
-                                    v-model="form.content"
+                                    v-model="form.body"
                                     class="mt-1 block w-full"
                                 />
 
-                                <InputError :message="form.errors.content" class="mt-2" />
+                                <InputError :message="form.errors.body" class="mt-2" /> 
                             </div>
 
                             <div class="flex items-center gap-4">
@@ -157,32 +171,32 @@ const closeModal = () => {
                     </div>
 
                     <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 mb-4" v-for="comment in thread.comments" :key="comment.id">
-                        <div v-if="!editComment">
+                        <div v-if="!editComment || (editComment && editComment.id !== comment.id)">
                             <p class="text-sm text-gray-400 pb-2">
                                 {{ comment.user.name }} | {{ new Date(comment.created_at).toDateString() }}
                             </p>
-                            <p>
-                                {{ comment.content }}
-                            </p>
+                            <p>{{ comment.body }}</p>
+                            <p>Slug: {{ comment.slug }}</p>
+                            <p>id: {{ comment.id }}</p>
                         </div>
 
-                        <div class="flex pt-4 justify-end space-x-4 text-sm" v-if="!editComment">
-                            <a href="#" class="text-gray-500 hidden" @click.prevent="editCommentData(comment)">Edit</a>
-                            <a href="" class="text-red-500" @click.prevent="confirmCommentDeletion">Delete</a>
+                        <div class="flex pt-4 justify-end space-x-4 text-sm" v-if="!editComment || (editComment && editComment.id !== comment.id)">
+                            <a href="#" class="text-slate-500" @click.prevent="editCommentData(comment)">Edit</a>
+                            <a href="#" class="text-red-500" @click.prevent="confirmCommentDeletion">Delete</a>
                         </div>
 
-                        <form @submit.prevent="updateComment" class="space-y-6" v-else>
+                        <form v-if="editComment && editComment.id === comment.id" @submit.prevent="updateComment" class="space-y-6">
                             <div>
                                 <InputLabel for="content" value="Comment" />
 
                                 <TextareaInput
                                     id="content"
                                     ref="contentInput"
-                                    v-model="form.content"
+                                    v-model="form.body"
                                     class="mt-1 block w-full"
                                 />
 
-                                <InputError :message="form.errors.content" class="mt-2" />
+                                <InputError :message="form.errors.body" class="mt-2" />
                             </div>
 
                             <div class="flex items-center gap-4">
@@ -202,6 +216,7 @@ const closeModal = () => {
                             </div>
                         </form>
 
+                        <!-- Modal for deletion confirmation -->
                         <Modal :show="confirmingCommentDeletion" @close="closeModal">
                             <div class="p-6">
                                 <h2 class="text-lg font-medium text-gray-900">

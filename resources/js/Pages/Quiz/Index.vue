@@ -16,29 +16,29 @@ const confirmQuizDeletion = () => {
     confirmingQuizDeletion.value = true;
 };
 
-const deleteQuiz = (id) => {
-    form.delete(route('quiz.destroy', id ), {
+const deleteQuiz = (subjectSlug, quizSlug) => {
+    const routeUrl = route('quiz.destroy', { subject: subjectSlug, quiz: quizSlug });
+    
+    console.log("Generated route URL: ", routeUrl);
+    console.log("quizSlug: ", quizSlug);
+    console.log("subjectSlug: ", subjectSlug);
+    
+    form.delete(routeUrl, {
         preserveScroll: true,
         onSuccess: () => closeModal(),
         onError: () => {},
         onFinish: () => form.reset(),
     });
-    console.log(id);
 };
 
-// const deleteTest = (id) => {
-//     form.delete(route('quiz.destroy', id), {
+// const deleteQuiz = (id) => {
+//     form.delete(route('quiz.destroy', id ), {
 //         preserveScroll: true,
-//         onSuccess: () => {
-//             closeModal();
-//         },
-//         onError: (errors) => {
-//             console.log('An error occurred', errors);
-//         },
-//         onFinish: () => {
-//             form.reset();
-//         }
+//         onSuccess: () => closeModal(),
+//         onError: () => {},
+//         onFinish: () => form.reset(),
 //     });
+//     console.log(id);
 // };
 
 const closeModal = () => {
@@ -65,6 +65,7 @@ const closeModal = () => {
                     >
                         Create New Quiz
                     </Link>
+                    <!-- :href="route('subjects.quizzes.create', {subject: subject.slug})" class="primary-button p-1" -->
 
                     <div class="mt-6 list-style-none">
                         <div v-for="quiz in $page.props.quizzes" :key="quiz.id" class="p-4 bg-gray-200 overflow-hidden shadow-sm sm:rounded-lg mt-3 flex items-center justify-between">
@@ -74,9 +75,12 @@ const closeModal = () => {
                                 <a :href="`/quiz/${quiz.id}`" class="primary-button">Questions</a>
 
                                 <!-- <a :href="`/quiz/${quiz.id}/edit`" class="primary-button">Edit Quiz</a> -->
-                                <a href="{{ route('quizzes.edit', $quiz->id) }}" class="primary-button">Edit Quiz</a>
+                                <a :href="route('subjects.quizzes.edit', { subject: quiz.subject_id, quiz: quiz.slug })" class="primary-button">Edit Quiz</a>
+                                <!-- <a :href="route('subjects.quizzes.edit', { subject: quiz.subject.slug, quiz: quiz.slug })" class="primary-button">Edit Quiz</a> -->
 
-                                <DangerButton @click="confirmQuizDeletion">Delete Quiz</DangerButton>
+                                <!-- <DangerButton @click="confirmQuizDeletion">Delete Quiz</DangerButton> -->
+                                <DangerButton @click="deleteQuiz(quiz.subject.slug, quiz.slug)">Delete Quiz</DangerButton>
+
 
                                 <Modal :show="confirmingQuizDeletion" @close="closeModal">
                                     <div class="p-6">
@@ -90,7 +94,7 @@ const closeModal = () => {
                                                 class="ml-3"
                                                 :class="{ 'opacity-25': form.processing }"
                                                 :disabled="form.processing"
-                                                @click="deleteTest(quiz.id)"
+                                                @click="deleteQuiz(quiz.id)"
                                             >
                                                 Delete Quiz
                                             </DangerButton>

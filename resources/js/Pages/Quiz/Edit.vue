@@ -74,18 +74,33 @@ watch(
 //     );
 
 const updateQuiz = () => {
-    console.log(props.quiz)
-    form.put(route('subjects.quizzes.update', {
-        subject: props.quiz.subject_id, 
-        quiz: props.quiz.id              
-    }), {
-        onSuccess: () => {
-            console.log('Quiz updated successfully');
-        },
-        onError: (errors) => {
-            console.error('Update failed:', errors);
-        }
+    console.log("props.quiz: ", props.quiz);
+    console.log('Updating subject:', props.quiz.subject_id, ', Quiz:', props.quiz.slug);
+
+    const SUBJECTS = { 1: "math", 2: "science", 3: "geography"}
+
+    const subjectSlug = SUBJECTS[props.quiz.subject_id]
+
+    const updateUrl = route('subjects.quizzes.update', {
+        subject: subjectSlug, 
+        quiz: props.quiz.slug
     });
+    
+    console.log('Update URL:', updateUrl); // Log the constructed URL
+
+    try {
+        form.patch(updateUrl, {
+            onSuccess: () => {
+                console.log('Quiz updated successfully');
+            },
+            onError: (errors) => {
+                console.log('Update failed:', JSON.stringify(errors));
+            }
+        });
+    } catch (error) {
+        // Code that runs if an exception occurs
+        console.error("Caught an error:", error.message);
+    }
 };
 
 </script>

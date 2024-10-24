@@ -12,6 +12,7 @@ use App\Models\Question;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class QuizController extends Controller
 {
@@ -20,8 +21,17 @@ class QuizController extends Controller
      */
     public function index(Subject $subject)
     {
+        // echo "hello world echo";
+        // Log::info('subject:');
+        
+        // return Inertia::render('Quiz/Index', [
+        //     'quizzes' => $subject->quizzes
+        // ]);
+        
+        $quizzes = $subject->quizzes()->with('subject')->get();
+
         return Inertia::render('Quiz/Index', [
-            'quizzes' => $subject->quizzes
+            'quizzes' => $quizzes
         ]);
     }
 
@@ -47,7 +57,6 @@ class QuizController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|max:50',
-            'description' => 'required|max:255',
             'subject_id' => 'required|exists:subjects,id',
             'category_id' => 'required|exists:categories,id',
         ]);
@@ -56,6 +65,7 @@ class QuizController extends Controller
         $validated['slug'] = Str::slug($validated['title']);
 
         $subject->questions()->create($validated);
+        // $quiz = $subject->quizzes()->create($validated);
 
         return redirect()->back();
     }
@@ -132,6 +142,7 @@ class QuizController extends Controller
      */
     public function edit(Request $request, Subject $subject, Quiz $quiz)
     {
+        echo "hello world edit page";
         if ($request->user()->role == 1)
             return redirect()->back();
 
@@ -154,14 +165,27 @@ class QuizController extends Controller
      */
     public function update(Request $request, Subject $subject, Quiz $quiz)
     {
+        // echo $subject;
+        // echo $quiz;
+        echo "hello world update page";
+        // Log::channel('stdout')->info('Something happened!');
+        // Log::info('requset: ', $request);
+        // Log::info('++++++++++++++subject: ', $subject);
+        // Log::info('--------------quiz: ', $quiz);
+        Log::info(['request' => $request]);
+        Log::info(['subject' => $subject]);
+        Log::info(['quiz' => $quiz]);
+        
         $validated = $request->validate([
             'title' => 'required|max:50',
             'subject_id' => 'required|exists:subjects,id',
             'category_id' => 'required|exists:categories,id'
         ]);
-
+        
         $validated['slug'] = Str::slug($validated['title']);
-
+        
+        Log::info(['validated' => $validated]);
+        
         $quiz->update($validated);
 
         return redirect()->back();
@@ -170,16 +194,17 @@ class QuizController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Quiz $quiz)
+    public function destroy(Subject $subject, $quiz)
     {
-        echo "Quiz Controller Delete Reached";
+        $quiz = Quiz::where('slug', $quiz)->firstOrFail();
 
-        // $subject = Subject::where('slug', request('subject_slug'))->firstOrFail();
-    
-        // $quiz = Quiz::findOrFail($quiz);
+        // optional check
+        if ($quiz->subject_id !== $subject->id) {
+            return abort(404, 'Quiz not found for this subject');
+        }
 
         $quiz->delete();
 
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Quiz deleted successfully.');
     }
 }

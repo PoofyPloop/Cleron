@@ -21,17 +21,26 @@ const props = defineProps({
     },
 });
 
+console.log("props: ", props);
+
 const form = useForm({
     title: "",
-    description: "",
     subject_id: "",
     category_id: "",
 });
 
+console.log("form: ", form);
+console.log('Subject ID:', route().params.subject);
+
 const submit = () => {
-    form.post(
-        route("subjects.quizzes.store", { subject: route().params.subject })
-    );
+    form.post(route("subjects.quizzes.store", { subject: route().params.subject }), {
+        onSuccess: () => {
+            console.log('Form submitted successfully.');
+        },
+        onError: (errors) => {
+            console.error('Submission failed', errors);
+        }
+    });
 };
 </script>
 
@@ -54,8 +63,8 @@ const submit = () => {
                             <Link
                                 :href="route('subjects.quizzes.index', { subject: route().params.subject })"
                                 class="text-sm text-primary-500"
-                                >Back to all quiz</Link
-                            >
+                                >Back to all quiz
+                            </Link>
                         </div>
 
                         <div>
@@ -90,7 +99,7 @@ const submit = () => {
                                         ref="subjectInput"
                                         v-model="form.subject_id"
                                     >
-                                        <option value="null" selected>
+                                        <option :value="null" selected>
                                             Select a subject
                                         </option>
                                         <option
@@ -118,7 +127,7 @@ const submit = () => {
                                         ref="categoryInput"
                                         v-model="form.category_id"
                                     >
-                                        <option value="null" selected>
+                                        <option :value="null" selected>
                                             Select a category
                                         </option>
                                         <option

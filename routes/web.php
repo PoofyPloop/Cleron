@@ -44,6 +44,7 @@ Route::get('/quiz/demo', [QuizController::class, 'demo'])->name('quiz.demo');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::get('/testcomments', [ProfileController::class, 'show'])->name('profile.show');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
@@ -52,7 +53,7 @@ Route::middleware('auth')->group(function () {
     
     Route::resource('subjects.quizzes', QuizController::class);
     Route::post('/subjects/{subject}/quizzes/{quiz}/submit', [QuizController::class, "submit"])->name('subjects.quizzes.submit');
-    Route::put('subjects/{subject}/quizzes/{quiz}', [QuizController::class, 'update'])->name('subjects.quizzes.update');
+    Route::patch('/subjects/{subject}/quizzes/{quiz}', [QuizController::class, 'update'])->name('subjects.quizzes.update');
     Route::get('/subjects/{subject}/quizzes/{quiz}/complete', [QuizController::class, "complete"])->name('subjects.quizzes.complete');
     Route::get('/subjects/{subject}/quizzes/{quiz}/results', [QuizController::class, "result"])->name('subjects.quizzes.result');
     Route::delete('/subjects/{subject}/quizzes/{quiz}/destroy', [QuizController::class, 'destroy'])->name('quiz.destroy');
@@ -63,7 +64,11 @@ Route::middleware('auth')->group(function () {
 
 
     Route::resource('threads', ThreadController::class);
-    Route::resource('threads.comments', CommentController::class);
+    Route::resource('threads.comments', CommentController::class); 
+    Route::delete('/threads/{thread}/comments/{comment}', [CommentController::class, 'destroy'])->name('threads.comments.destroy');
+    Route::put('/threads/{thread:slug}/comments/{comment:slug}', [CommentController::class, 'update'])->name('threads.comments.update');
+    // Route::post('/testcomments', [CommentController::class, 'show'])->name('abcd');
+    // Route::get('/testcomments', [CommentController::class, 'show'])->name('threads.comments.show');
+    // Route::post('/threads/{thread}', [CommentController::class, 'store'])->name('threads.comments.store');
 });
-
 require __DIR__ . '/auth.php';

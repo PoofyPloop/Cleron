@@ -23,7 +23,8 @@ class CommentFactory extends Factory
         return [
             'body' => $this->faker->paragraph,
             'user_id' => User::factory(),
-            'thread_id' => Thread::all()->count() ? Thread::all()->random()->id : Thread::factory(),
+            // 'thread_id' => Thread::all()->count() ? Thread::all()->random()->id : Thread::factory(),
+            'thread_id' => Thread::exists() ? Thread::inRandomOrder()->first()->id : Thread::factory(),
         ];
     }
 }
