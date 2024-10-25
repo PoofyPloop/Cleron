@@ -8,7 +8,7 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 import Modal from '@/Components/Modal.vue';
 import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 
 const props = defineProps({
     thread: {
@@ -21,13 +21,15 @@ const form = useForm({
     body: '', 
 });
 
+const comments = computed(() => props.thread.comments || []);
 const editComment = ref(null);
 const confirmingCommentDeletion = ref(false);
+const commentToDelete = ref(null);
 
-const confirmCommentDeletion = () => {
+const confirmCommentDeletion = (id) => {
+    commentToDelete.value = id;
     confirmingCommentDeletion.value = true;
 };
-
 const storeComment = () => {
     const discussionTitle = usePage().props.thread.title;
     if (!discussionTitle) {
@@ -48,11 +50,17 @@ const storeComment = () => {
     });
 };
 
-const editCommentData = (comment) => {
-    console.log(comment);  
+// const editCommentData = (comment) => {
+//     console.log(comment);  
 
-    editComment.value = comment;
-    form.body = comment.body || '';  
+//     editComment.value = comment;
+//     form.body = comment.body || '';  
+// };
+
+const editCommentData = (comment) => {
+    console.log('Editing comment:', comment);
+    editComment.value = { ...comment };  // Create a copy of the comment
+    form.body = comment.body || '';
 };
 
 const cancelEditComment = () => {
@@ -61,11 +69,15 @@ const cancelEditComment = () => {
 };
 
 const updateComment = () => {
-    console.log(form.body);
+    console.log('Updating comment, editComment.value:', editComment.value);
+    if (!editComment.value || !editComment.value.id) {
+        console.error('Comment data is missing', editComment.value);
+        return;
+    }
 
     form.put(route('threads.comments.update', {
-        thread: usePage().props.thread.slug,
-        comment: editComment.value.slug,
+        thread: props.thread.slug,
+        comment: editComment.value.id,  // Use id instead of slug
     }), {
         preserveScroll: true,
         onSuccess: () => {
@@ -171,7 +183,7 @@ const closeModal = () => {
                     </div>
 
                     <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 mb-4" v-for="comment in thread.comments" :key="comment.id">
-                        <div v-if="!editComment || (editComment && editComment.id !== comment.id)">
+                        <div v-if="!editComment || editComment.id !== comment.id">
                             <p class="text-sm text-gray-400 pb-2">
                                 {{ comment.user.name }} | {{ new Date(comment.created_at).toDateString() }}
                             </p>
@@ -182,7 +194,7 @@ const closeModal = () => {
 
                         <div class="flex pt-4 justify-end space-x-4 text-sm" v-if="!editComment || (editComment && editComment.id !== comment.id)">
                             <a href="#" class="text-slate-500" @click.prevent="editCommentData(comment)">Edit</a>
-                            <a href="#" class="text-red-500" @click.prevent="confirmCommentDeletion">Delete</a>
+                            <a href="#" class="text-red-500" @click.prevent="confirmCommentDeletion(comment.id)">Delete</a>
                         </div>
 
                         <form v-if="editComment && editComment.id === comment.id" @submit.prevent="updateComment" class="space-y-6">
@@ -230,7 +242,7 @@ const closeModal = () => {
                                         class="ml-3"
                                         :class="{ 'opacity-25': form.processing }"
                                         :disabled="form.processing"
-                                        @click="deleteComment(comment.id)"
+                                        @click="deleteComment(commentToDelete)"
                                     >
                                         Delete Comment
                                     </DangerButton>

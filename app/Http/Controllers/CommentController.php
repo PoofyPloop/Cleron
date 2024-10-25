@@ -44,26 +44,18 @@ class CommentController extends Controller
      */
     public function update(Request $request, Thread $thread, Comment $comment)
     {
-        \Log::info('Updating comment', ['comment' => $comment->toArray(), 'thread' => $thread->toArray()]);
-
         if ($comment->thread_id !== $thread->id) {
             abort(404);
         }
-
+    
         $validated = $request->validate([
             'body' => 'required|string|max:1000',
         ]);
-
-        \Log::info('Validated request data', ['data' => $validated]);
-
-        $comment->body = $validated['body'];
-        $comment->save();
-
-        \Log::info('Comment updated successfully', ['comment' => $comment->toArray()]);
-
-        return response()->json(['message' => 'Comment updated successfully']);
+    
+        $comment->update($validated);
+    
+        return back();
     }
-
 
     /**
      * Remove the specified resource from storage.
@@ -78,7 +70,7 @@ class CommentController extends Controller
         // Proceed with deletion
         $comment->delete();
 
-        return response()->json(['message' => 'Comment deleted successfully']);
+        return back();
     }
 
 
