@@ -21,79 +21,80 @@ const form = useForm({
     body: '', 
 });
 
-const comments = computed(() => props.thread.comments || []);
-const editComment = ref(null);
+const editCommentForm = useForm({
+    body: '',
+});
+
+const editingComment = ref(null); // Use this to track which comment is being edited
 const confirmingCommentDeletion = ref(false);
 const commentToDelete = ref(null);
+
+const newCommentForm = useForm({
+    body: '', // make sure this matches your backend expectation
+});
+
+// Store new comment
+const storeComment = () => {
+    const threadSlug = props.thread.slug; // Use slug instead of title
+    if (!threadSlug) {
+        console.error("Thread slug is undefined");
+        return;
+    }
+
+    newCommentForm.post(route('threads.comments.store', { 
+        thread: encodeURIComponent(threadSlug)
+    }), {
+        preserveScroll: true,
+        onSuccess: () => {
+            newCommentForm.reset();
+        },
+        onError: () => {
+            if (newCommentForm.errors.body) {
+                contentInput.value.focus();
+            }
+        },
+    });
+};
+
+// Start editing a comment
+const editCommentData = (comment) => {
+    editingComment.value = comment;
+    editCommentForm.body = comment.body;
+};
+
+// Cancel editing
+const cancelEditComment = () => {
+    editingComment.value = null;
+    editCommentForm.reset();
+};
+
+// Update comment
+const updateComment = () => {
+    if (!editingComment.value) {
+        return;
+    }
+
+    editCommentForm.put(route('threads.comments.update', {
+        thread: props.thread.slug,
+        comment: editingComment.value.id,
+    }), {
+        preserveScroll: true,
+        onSuccess: () => {
+            editingComment.value = null;
+            editCommentForm.reset();
+        },
+        onError: () => {
+            if (editCommentForm.errors.body) {
+                contentInput.value.focus();
+            }
+        },
+    });
+};
 
 const confirmCommentDeletion = (id) => {
     commentToDelete.value = id;
     confirmingCommentDeletion.value = true;
 };
-const storeComment = () => {
-    const discussionTitle = usePage().props.thread.title;
-    if (!discussionTitle) {
-        console.error("Discussion title is undefined");
-        return;
-    }
-
-    form.post(route('threads.comments.store', { thread: discussionTitle }), {
-        preserveScroll: true,
-        onSuccess: () => {
-            form.reset();
-        },
-        onError: () => {
-            if (form.errors.body) {
-                contentInput.value.focus();
-            }
-        },
-    });
-};
-
-// const editCommentData = (comment) => {
-//     console.log(comment);  
-
-//     editComment.value = comment;
-//     form.body = comment.body || '';  
-// };
-
-const editCommentData = (comment) => {
-    console.log('Editing comment:', comment);
-    editComment.value = { ...comment };  // Create a copy of the comment
-    form.body = comment.body || '';
-};
-
-const cancelEditComment = () => {
-    editComment.value = null;
-    form.body = ''; 
-};
-
-const updateComment = () => {
-    console.log('Updating comment, editComment.value:', editComment.value);
-    if (!editComment.value || !editComment.value.id) {
-        console.error('Comment data is missing', editComment.value);
-        return;
-    }
-
-    form.put(route('threads.comments.update', {
-        thread: props.thread.slug,
-        comment: editComment.value.id,  // Use id instead of slug
-    }), {
-        preserveScroll: true,
-        onSuccess: () => {
-            console.log('Comment updated successfully');  
-            editComment.value = null;
-            form.reset();
-        },
-        onError: () => {
-            console.error('Error updating comment');
-            if (form.errors.body) {
-                contentInput.value.focus();
-            }
-        },
-    });
-};
-
 
 const deleteComment = (id) => {
     const threadSlug = usePage().props.thread.slug; 
@@ -154,27 +155,24 @@ const closeModal = () => {
                         <form @submit.prevent="storeComment" class="space-y-6">
                             <div>
                                 <InputLabel for="content" value="Comment" />
-
                                 <TextareaInput
                                     id="content"
                                     ref="contentInput"
-                                    v-model="form.body"
+                                    v-model="newCommentForm.body"
                                     class="mt-1 block w-full"
                                 />
-
-                                <InputError :message="form.errors.body" class="mt-2" /> 
+                                <InputError :message="newCommentForm.errors.body" class="mt-2" />
                             </div>
 
                             <div class="flex items-center gap-4">
-                                <PrimaryButton :disabled="form.processing">Comment</PrimaryButton>
-
+                                <PrimaryButton :disabled="newCommentForm.processing">Comment</PrimaryButton>
                                 <Transition
                                     enter-active-class="transition ease-in-out"
                                     enter-from-class="opacity-0"
                                     leave-active-class="transition ease-in-out"
                                     leave-to-class="opacity-0"
                                 >
-                                    <p v-if="form.recentlySuccessful" class="text-sm text-gray-600">
+                                    <p v-if="newCommentForm.recentlySuccessful" class="text-sm text-gray-600">
                                         Comment Posted.
                                     </p>
                                 </Transition>
@@ -182,46 +180,44 @@ const closeModal = () => {
                         </form>
                     </div>
 
-                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 mb-4" v-for="comment in thread.comments" :key="comment.id">
-                        <div v-if="!editComment || editComment.id !== comment.id">
+                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 mb-4" 
+                            v-for="comment in thread.comments" 
+                            :key="comment.id">
+                        <div v-if="editingComment?.id !== comment.id">
                             <p class="text-sm text-gray-400 pb-2">
                                 {{ comment.user.name }} | {{ new Date(comment.created_at).toDateString() }}
                             </p>
                             <p>{{ comment.body }}</p>
-                            <p>Slug: {{ comment.slug }}</p>
-                            <p>id: {{ comment.id }}</p>
+                            
+                            <div class="flex pt-4 justify-end space-x-4 text-sm" 
+                                v-if="$page.props.auth.user.id === comment.user.id">
+                                <a href="#" class="text-slate-500" @click.prevent="editCommentData(comment)">Edit</a>
+                                <a href="#" class="text-red-500" @click.prevent="confirmCommentDeletion(comment.id)">Delete</a>
+                            </div>
                         </div>
 
-                        <div class="flex pt-4 justify-end space-x-4 text-sm" v-if="!editComment || (editComment && editComment.id !== comment.id)">
-                            <a href="#" class="text-slate-500" @click.prevent="editCommentData(comment)">Edit</a>
-                            <a href="#" class="text-red-500" @click.prevent="confirmCommentDeletion(comment.id)">Delete</a>
-                        </div>
-
-                        <form v-if="editComment && editComment.id === comment.id" @submit.prevent="updateComment" class="space-y-6">
+                         <form v-else @submit.prevent="updateComment" class="space-y-6">
                             <div>
                                 <InputLabel for="content" value="Comment" />
-
                                 <TextareaInput
                                     id="content"
                                     ref="contentInput"
-                                    v-model="form.body"
+                                    v-model="editCommentForm.body"
                                     class="mt-1 block w-full"
                                 />
-
-                                <InputError :message="form.errors.body" class="mt-2" />
+                                <InputError :message="editCommentForm.errors.body" class="mt-2" />
                             </div>
 
                             <div class="flex items-center gap-4">
-                                <PrimaryButton :disabled="form.processing">Update</PrimaryButton>
+                                <PrimaryButton :disabled="editCommentForm.processing">Update</PrimaryButton>
                                 <a href="#" @click.prevent="cancelEditComment" class="text-sm text-gray-400">Cancel</a>
-
                                 <Transition
                                     enter-active-class="transition ease-in-out"
                                     enter-from-class="opacity-0"
                                     leave-active-class="transition ease-in-out"
                                     leave-to-class="opacity-0"
                                 >
-                                    <p v-if="form.recentlySuccessful" class="text-sm text-gray-600">
+                                    <p v-if="editCommentForm.recentlySuccessful" class="text-sm text-gray-600">
                                         Comment Updated.
                                     </p>
                                 </Transition>

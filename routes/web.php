@@ -66,8 +66,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('threads', ThreadController::class);
     Route::resource('threads.comments', CommentController::class); 
     Route::delete('/threads/{thread}/comments/{comment}', [CommentController::class, 'destroy'])->name('threads.comments.destroy');
-    Route::put('/threads/{thread:slug}/comments/{comment}', [CommentController::class, 'update'])->name('threads.comments.update');    // Route::post('/testcomments', [CommentController::class, 'show'])->name('abcd');
-    // Route::get('/testcomments', [CommentController::class, 'show'])->name('threads.comments.show');
-    // Route::post('/threads/{thread}', [CommentController::class, 'store'])->name('threads.comments.store');
+    Route::put('/threads/{thread:slug}/comments/{comment}', [CommentController::class, 'update'])->name('threads.comments.update');
+    Route::post('threads/{thread}/comments', [CommentController::class, 'store'])->name('threads.comments.store')->where('thread', '.*');
 });
 require __DIR__ . '/auth.php';

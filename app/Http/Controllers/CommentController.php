@@ -21,9 +21,8 @@ class CommentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, Thread $thread)
-    {
-        echo "hello world echo post";
+    public function store(Request $request, Thread $thread) 
+    {        
         $validated = $request->validate([
             'body' => 'required|string|max:1000',
         ]);
