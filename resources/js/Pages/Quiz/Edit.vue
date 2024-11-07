@@ -69,40 +69,35 @@ watch(
     }
 );
 
-// form.post(
-//         route("subjects.quizzes.store", { subject: route().params.subject })
-//     );
+
 
 const updateQuiz = () => {
-    console.log("props.quiz: ", props.quiz);
-    console.log('Updating subject:', props.quiz.subject_id, ', Quiz:', props.quiz.slug);
+    console.log("Full quiz object:", props.quiz);
+    console.log({ subject_id: props.quiz.subject_id, quiz_slug: props.quiz.slug, current_route: route().current()});
 
-    const SUBJECTS = { 1: "math", 2: "science", 3: "geography"}
+    const SUBJECTS = { 1: "math", 2: "science", 3: "geography"};
 
-    const subjectSlug = SUBJECTS[props.quiz.subject_id]
+    const subjectSlug = SUBJECTS[props.quiz.subject_id];
 
-    const updateUrl = route('subjects.quizzes.update', {
-        subject: subjectSlug, 
-        quiz: props.quiz.slug
-    });
+    console.log("Subject Slug:", subjectSlug);
     
-    console.log('Update URL:', updateUrl); // Log the constructed URL
-
     try {
-        form.patch(updateUrl, {
+        form.patch(route('subjects.quizzes.update', {
+            subject: subjectSlug,
+            quiz: props.quiz.slug
+        }), {
+            preserveState: true,
             onSuccess: () => {
-                console.log('Quiz updated successfully');
+                console.log('Success!');
             },
             onError: (errors) => {
-                console.log('Update failed:', JSON.stringify(errors));
+                console.error('Errors:', errors);
             }
         });
     } catch (error) {
-        // Code that runs if an exception occurs
-        console.error("Caught an error:", error.message);
+        console.error("Error:", error);
     }
 };
-
 </script>
 
 <template>
@@ -244,7 +239,7 @@ const updateQuiz = () => {
                         <hr class="my-5" />
                         <div class="mt-6 space-y-6">
                             <div class="flex items-center justify-between">
-                                <h3 class="title-h3">Add Questions</h3>
+                                <h3 class="title-h3">Questions</h3>
                             </div>
                             <div class="mt-2">
                                 <div
@@ -262,7 +257,7 @@ const updateQuiz = () => {
                                         class="mt-4"
                                         type="button"
                                         @click="addQuestion"
-                                        >Add</PrimaryButton
+                                        >Add Question</PrimaryButton
                                     >
                                 </div>
                             </div>

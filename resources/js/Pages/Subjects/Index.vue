@@ -1,4 +1,3 @@
-
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
@@ -6,37 +5,33 @@ import { ref, computed } from 'vue';
 
 const props = defineProps(['subjects', 'categories']);
 
-// State for filters
 const selectedSubject = ref('all');
 const selectedCategory = ref('all');
 
 console.log('prosp:', props);
 console.log('prosp category:', props.category);
-// Computed property to filter quizzes based on selected subject and category
+
 const filteredQuizzes = computed(() => {
     return props.subjects.map(subject => {
         const quizzes = subject.quizzes.filter(quiz => {
-            // Filter by selected category if it's not 'all'
+            
             if (selectedCategory.value !== 'all' && quiz.category.title !== selectedCategory.value) {
                 return false;
             }
             if (quiz.category) {
                 quiz.category.subject_id = quiz.subject_id;
-                // const foundCategory = props.categories ? props.categories.find(cat => cat.subject_id === quiz.subject_id) : null;
-                // quiz.category.title = foundCategory ? foundCategory.title : 'Unknown Category'; // Set title
             }
 
-            return true; // Include all quizzes if 'all' is selected
+            return true; 
         });
 
         return {
             ...subject,
             quizzes: quizzes
         };
-    }).filter(subject => subject.quizzes.length > 0); // Remove subjects with no quizzes
+    }).filter(subject => subject.quizzes.length > 0); 
 });
 
-// Function to reset the category filter
 const resetCategoryFilter = () => {
     selectedCategory.value = 'all';
 };
@@ -67,7 +62,7 @@ const getSubjectColor = (subjectId) => {
 
         <div class="mx-96">
             <div class="bg-white rounded-lg p-5 mt-10 mb-5 flex justify-center border">
-                <select v-model="selectedSubject" @change="resetCategoryFilter">
+                <select v-model="selectedSubject" @change="resetCategoryFilter" class="mr-2">
                     <option value="all">All</option>
                     <option value="Math">Math</option>
                     <option value="Science">Science</option>
@@ -97,31 +92,45 @@ const getSubjectColor = (subjectId) => {
                     <option v-if="selectedSubject === 'Geography'" value="Meteorology">Meteorology</option>
                 </select>
             </div>
-
-            <div class="flex flex-wrap justify-center mt-10" v-for="subject in subjects" :key="subject.id">
-                <div class="border py-5 pl-5 bg-white rounded-xl"  v-if="selectedSubject === 'all' || subject.title === selectedSubject">
-                    <div v-for="quiz in subject.quizzes" :key="quiz.id">
-                        <div v-if="selectedCategory === 'all' || quiz.category.title === selectedCategory">
-                            <div >
-                                <p>{{ quiz.title }}</p>
-                                <p :class="getSubjectColor(subject.id)" class="inline-flex items-center rounded-md px-1 py-0.5 text-xs font-small ring-1 ring-inset mr-2 font-semibold">{{ subject.title }}</p>
-                                <p class="inline-flex items-center rounded-md bg-slate-200 px-1 py-0.5 text-xs font-small text-slate-700 ring-1 ring-inset ring-slate-700 font-semibold">
-                                    {{ quiz.category.title }} (Subject ID: {{ quiz.category.subject_id }})
-                                </p>
-                                <p class="pt-2 text-sm text-gray-400">{{ quiz.user?.name }}</p>
-                            </div>
-
-                            <div class="flex items-center justify-center"> 
-                                <div class="flex justify-center items-center" v-if="$page.props.auth.user.role == 1">
-                                    <Link :href="route('subjects.quizzes.show', {subject: subject.slug, quiz: quiz.slug})" class="primary-button">Take Quiz</Link>
+            
+            <div class="grid grid-cols-3 gap-6">
+                <template v-for="subject in subjects" :key="subject.id">
+                    <template v-if="selectedSubject === 'all' || subject.title === selectedSubject">
+                        <template v-for="quiz in subject.quizzes" :key="quiz.id">
+                            <div v-if="selectedCategory === 'all' || quiz.category.title === selectedCategory" 
+                                class="border p-4 bg-white rounded-xl shadow-sm h-[200px] w-full flex flex-col">
+                                <div class="h-[50px]">
+                                    <p class="font-semibold">{{ quiz.title }}</p>
                                 </div>
-                                <div v-else>
-                                    <Link :href="route('subjects.quizzes.edit', {subject: subject.slug, quiz: quiz.slug})" class="primary-button">View</Link>
+
+                                <div class="mt-auto">
+                                    <p :class="getSubjectColor(subject.id)" 
+                                    class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset mr-2">
+                                        {{ subject.title }}
+                                    </p>
+                                    <p class="inline-flex items-center rounded-md bg-slate-200 px-2 py-1 text-xs font-medium text-slate-700 ring-1 ring-inset ring-slate-700">
+                                        {{ quiz.category.title }}
+                                    </p>
+                                </div>
+
+                                <div class="mt-auto">
+                                    <p class="text-sm text-gray-400">{{ quiz.user?.name }}</p>
+                                    
+                                    <div class="mt-2">
+                                        <div v-if="$page.props.auth.user.role == 1">
+                                            <Link :href="route('subjects.quizzes.show', {subject: subject.slug, quiz: quiz.slug})" 
+                                                class="primary-button">Take Quiz</Link>
+                                        </div>
+                                        <div v-else>
+                                            <Link :href="route('subjects.quizzes.edit', {subject: subject.slug, quiz: quiz.slug})" 
+                                                class="primary-button">View</Link>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
+                        </template>
+                    </template>
+                </template>
             </div>
         </div>
     </AuthenticatedLayout>

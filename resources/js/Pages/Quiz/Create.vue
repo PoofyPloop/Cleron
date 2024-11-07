@@ -9,7 +9,6 @@ import TextInput from "@/Components/TextInput.vue";
 import { useForm, usePage } from "@inertiajs/vue3";
 import { ref } from "vue";
 
-
 const props = defineProps({
     subjects: {
         type: Array,

@@ -64,8 +64,7 @@ class QuizController extends Controller
         $validated['user_id'] = $request->user()->id;
         $validated['slug'] = Str::slug($validated['title']);
 
-        $subject->questions()->create($validated);
-        // $quiz = $subject->quizzes()->create($validated);
+        $quiz = $subject->quizzes()->create($validated);
 
         return redirect()->back();
     }
@@ -142,7 +141,6 @@ class QuizController extends Controller
      */
     public function edit(Request $request, Subject $subject, Quiz $quiz)
     {
-        echo "hello world edit page";
         if ($request->user()->role == 1)
             return redirect()->back();
 
@@ -165,17 +163,6 @@ class QuizController extends Controller
      */
     public function update(Request $request, Subject $subject, Quiz $quiz)
     {
-        // echo $subject;
-        // echo $quiz;
-        echo "hello world update page";
-        // Log::channel('stdout')->info('Something happened!');
-        // Log::info('requset: ', $request);
-        // Log::info('++++++++++++++subject: ', $subject);
-        // Log::info('--------------quiz: ', $quiz);
-        Log::info(['request' => $request]);
-        Log::info(['subject' => $subject]);
-        Log::info(['quiz' => $quiz]);
-        
         $validated = $request->validate([
             'title' => 'required|max:50',
             'subject_id' => 'required|exists:subjects,id',
