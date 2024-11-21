@@ -20,6 +20,7 @@ export default defineConfig({
     base: '/',
     server: {
         host: '0.0.0.0',
-        port: process.env.VITE_PORT || 5176,
+        port: 5176,
+        // port: process.env.VITE_PORT || 5176,
     },
 });
