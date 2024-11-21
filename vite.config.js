@@ -18,8 +18,7 @@ export default defineConfig({
         }),
     ],
     base: '/',
-    // server: {
-    //     host: '0.0.0.0', // This makes the dev server accessible externally
-    //     port: 8080, // You can set this to your desired port
-    // },
+    server: {
+        host: '0.0.0.0',
+    },
 });
