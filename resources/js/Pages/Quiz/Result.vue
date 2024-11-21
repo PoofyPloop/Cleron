@@ -24,7 +24,7 @@ const props = defineProps(['questions']);
                         <p class="pb-6">You scored: </p>
                         {{ questions }}
                         <DangerButton>Report</DangerButton>
-                        <!-- <Link class="primary-button">Retry</Link> -->
+                        <Link class="primary-button">Retry</Link>
                     </div>
                 </div>
             </div>

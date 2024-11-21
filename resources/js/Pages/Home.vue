@@ -9,7 +9,7 @@ const props = defineProps({
         default: () => ({
             quizzes: 0,
             average: 0,
-            discussions: 0,
+            threads: 0,
             comments: 0, 
         }),
     },
@@ -62,8 +62,8 @@ const props = defineProps({
                         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                             <div class="p-6 text-gray-900">
                                 <div class="flex justify-between">
-                                    <p>Discussions Created</p>
-                                    <p class="text-4xl">{{ statistics.discussions }}</p>
+                                    <p>Threads Created</p>
+                                    <p class="text-4xl">{{ statistics.threads }}</p>
                                 </div>
                             </div>
                         </div>
@@ -73,7 +73,7 @@ const props = defineProps({
                         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                             <div class="p-6 text-gray-900">
                                 <div class="flex justify-between">
-                                    <p>Discussion Participation</p>
+                                    <p>Thread Participation</p>
                                     <p class="text-4xl">{{ statistics.comments }}</p>
                                 </div>
                             </div>
@@ -125,7 +125,7 @@ const props = defineProps({
                         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                             <div class="p-6 text-gray-900">
                                 <div class="flex justify-between">
-                                    <p>Discussions Participated</p>
+                                    <p>Thread Participation</p>
                                     <p class="text-4xl">{{  statistics.comments }}</p>
                                 </div>
                             </div>

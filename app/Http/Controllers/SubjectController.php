@@ -15,16 +15,7 @@ class SubjectController extends Controller
     {
         return Inertia::render('Subjects/Index', [
             'subjects' => fn() => Subject::with(['quizzes.user', 'quizzes.category', 'quizzes.subject'])->get(),
-            // 'categories' => fn() => Category::select(['title', 'subject_id'])->get(),
         ]);
-
-        // $subjects = Subject::with(['quizzes.user', 'quizzes.category', 'quizzes.subject'])->get();
-        // $categories = Category::select(['id', 'title', 'subject_id'])->get(); // Fetch categories correctly
-
-        // return Inertia::render('Subjects/Index', [
-        //     'subjects' => fn() => $subjects,
-        //     'categories' => fn() => $categories, // Ensure categories are included
-        // ]);
     }
 
 
