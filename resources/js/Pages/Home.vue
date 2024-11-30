@@ -1,7 +1,9 @@
-
 <script setup>
+import { ref, computed } from 'vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, router, usePage, Link } from '@inertiajs/vue3';
+
+const page = usePage();
 
 const props = defineProps({
     statistics: {
@@ -19,8 +21,35 @@ const props = defineProps({
     },
     subject: {
         type: Object,
+        default: null,
+    },
+    pendingReports: {
+        type: Array,
+        default: () => [],
     },
 });
+
+const userRole = computed(() => {
+    return page.props.auth?.user?.role ?? null;
+});
+
+console.log('User  Role:', userRole.value);
+console.log('Pending Reports:', props.pendingReports);
+console.log('Report:', JSON.stringify(props.pendingReports, null, 2));
+
+const markReportFixed = (report) => {
+    router.delete(route('reports.destroy', {
+        report: report.id
+    }), {
+        onSuccess: () => {
+            alert('Report marked as fixed');
+        },
+        onError: (errors) => {
+            console.error('Delete Errors:', errors);
+            alert('Failed to remove report');
+        }
+    });
+};
 </script>
 
 <template>
@@ -32,7 +61,7 @@ const props = defineProps({
         </template>
 
         <div class="py-12">
-            <div class="max-w-4xl mx-auto sm:px-6 lg:px-8" v-if="$page.props.auth.user.role == 1">
+            <div class="max-w-4xl mx-auto sm:px-6 lg:px-8" v-if="userRole === 1">
                 <p class="text-2xl font-semibold text-gray-600 pb-2 pt-10">Statistics</p>
 
                 <div class="grid grid-cols-12 gap-6">
@@ -52,7 +81,7 @@ const props = defineProps({
                             <div class="p-6 text-gray-900">
                                 <div class="flex justify-between">
                                     <p>Average Grades</p>
-                                    <p class="text-4xl">{{ statistics.average }}</p>
+                                    <p class="text-4xl">{{ statistics.average.toFixed(2) }}</p>
                                 </div>
                             </div>
                         </div>
@@ -79,11 +108,10 @@ const props = defineProps({
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
 
-            <div class="max-w-4xl mx-auto sm:px-6 lg:px-8" v-if="$page.props.auth.user.role == 2">
+            <div class="max-w-4xl mx-auto sm:px-6 lg:px-8" v-if="userRole === 2">
                 <div>
                     <p class="text-2xl font-semibold text-gray-600 pb-2">Quizzes</p>
                     
@@ -92,12 +120,12 @@ const props = defineProps({
                             <div class="p-6 text-gray-900">
                                 <div class="flex justify-between items-center">
                                     <p>Access Quizzes</p>
-                                    <Link :href="route('subjects.quizzes.index', { subject: subject.slug})" class="primary-button" >View</Link>
+                                    <Link :href="route('subjects.quizzes.index', { subject: subject.slug})" class="primary-button">View</Link>
                                 </div>
 
                                 <div class="flex justify-between items-center mt-1">
                                     <p>Create Quiz</p>
-                                    <Link :href="route('subjects.quizzes.create', {subject: subject.slug})" class="primary-button p-1" >
+                                    <Link :href="route('subjects.quizzes.create', {subject: subject.slug})" class="primary-button p-1">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                                         </svg>
@@ -121,17 +149,16 @@ const props = defineProps({
                             </div>
                         </div>
 
-                    <div class="col-span-6">
-                        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                            <div class="p-6 text-gray-900">
-                                <div class="flex justify-between">
-                                    <p>Thread Participation</p>
-                                    <p class="text-4xl">{{  statistics.comments }}</p>
+                        <div class="col-span-6">
+                            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                                <div class="p-6 text-gray-900">
+                                    <div class="flex justify-between">
+                                        <p>Thread Participation</p>
+                                        <p class="text-4xl">{{ statistics.comments }}</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-
                     </div>
                 </div>
 
@@ -142,30 +169,33 @@ const props = defineProps({
                         <div class="col-span-12">
                             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                                 <div class="p-6 text-gray-900">
-                                    <table class="w-full text-sm text-left text-gray-500">
+                                    <h2>Pending Reports</h2>
+                                    <div v-if="pendingReports.length === 0" class="text-center text-gray-500">
+                                        No pending reports found.
+                                    </div>
+                                    <table v-else class="w-full text-sm text-left text-gray-500">
                                         <thead class="text-xs text-gray-700 uppercase bg-gray-50">
                                             <tr>
-                                                <th scope="col" class="px-6 py-3">
-                                                    Pending Report
-                                                </th>
-                                                <th scope="col" class="px-6 py-3">
-                                                    Go to
-                                                </th>
-                                                <th scope="col" class="px-6 py-3">
-                                                    Status
-                                                </th>
+                                                <th scope="col" class="px-6 py-3">Report Description</th>
+                                                <th scope="col" class="px-6 py-3 text-center">Quiz</th>
+                                                <th scope="col" class="px-6 py-3 text-center">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr class="bg-white border-b">
-                                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                                                    Quiz 1
-                                                </th>
-                                                <td class="px-6 py-4">
-                                                    <a href="#" class="font-medium text-blue-600 hover:underline">View</a>
+                                            <tr v-for="report in pendingReports" :key="report.id" class="bg-white border-b">
+                                                <td class="px-6 py-4">{{ report.description }}</td>
+                                                <td class="px-6 py-4 text-center">
+                                                    <Link :href="route('subjects.quizzes.edit', { 
+                                                        subject: report.quiz.subject.slug, 
+                                                        quiz: report.quiz.slug 
+                                                    })" class="font-medium text-blue-600 hover:underline">
+                                                        Fix
+                                                    </Link>
                                                 </td>
-                                                <td class="px-6 py-4">
-                                                    <a href="#" class="font-medium text-blue-600 hover:underline">Completed</a>
+                                                <td class="px-6 py-4 text-center">
+                                                    <button @click="markReportFixed(report)" class="font-medium text-red-600 hover:underline">
+                                                        Remove
+                                                    </button>
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -175,7 +205,6 @@ const props = defineProps({
                         </div>
                     </div>
                 </div>
-                
             </div>
         </div>
     </AuthenticatedLayout>

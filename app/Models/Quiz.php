@@ -93,6 +93,7 @@ class Quiz extends Model
     public function results(): \Illuminate\Database\Eloquent\Collection
     {
         $user = auth()->user();
+
         return $this->questions->load([
             'answers' => function ($query) use ($user) {
                 $query->where('user_id', $user->id);
@@ -120,6 +121,17 @@ class Quiz extends Model
         $user = auth()->user();
         return $this->answers()->where('user_id', $user->id)->sum('score');
     }
+
+    /**
+     * Get the correct answe for the Quiz
+     * 
+     * @return int - The correct answer for the quiz
+     */
+    // public function getAnswerAttribute()
+    // {
+    //     return $this->answers->firstWhere('user_id', auth()->id());
+    // }
+
 
     public function getRouteKeyName(): string
     {

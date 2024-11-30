@@ -17,9 +17,13 @@ const form = useForm({
 });
 
 const submit = () => {
+    console.log("Submitted quiz data:", JSON.stringify(form.questions, null, 2));
     form.post(route('subjects.quizzes.submit', {subject: route().params.subject, quiz: props.quiz.slug}));
 };
 
+const logUserAnswer = (answer) => {
+  console.log("User Answer Updated:", answer);
+};
 </script>
 
 <template>
@@ -55,7 +59,12 @@ const submit = () => {
                                     </div>
                                 </template>
                                 <template v-else-if="question.type == 'text'">
-                                    <input class="border border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md shadow-sm" v-model="question.user_answer" :type="question.type" />
+                                    <input 
+                                        class="border border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md shadow-sm" 
+                                        v-model="question.user_answer" 
+                                        :type="question.type" 
+                                        @input="logUserAnswer(question.user_answer)" 
+                                    />
                                 </template>
                                 <template v-else>
                                     <textarea class="border border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md shadow-sm" v-model="question.user_answer"></textarea>

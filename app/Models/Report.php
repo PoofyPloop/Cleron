@@ -15,6 +15,7 @@ class Report extends Model
         'user_id',
         'description',
         'quiz_id',
+        'status',
     ];
 
     /**

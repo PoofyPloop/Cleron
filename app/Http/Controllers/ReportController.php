@@ -25,16 +25,39 @@ class ReportController extends Controller
      */
     public function store(Request $request, Subject $subject, Quiz $quiz)
     {
+        \Log::info('Report Store Method Started', [
+            'current_user_id' => auth()->user()->id,
+            'current_user_role' => auth()->user()->role,
+            'subject_slug' => $subject->slug,
+            'quiz_slug' => $quiz->slug
+        ]);
+
         $validated = $request->validate([
             'description' => 'required|string|max:255',
         ]);
 
-        $quiz->reports()->create([
-            'description' => $validated['description'],
-            'user_id' => auth()->user()->id,
-        ]);
+        try {
+            $report = $quiz->reports()->create([
+                'description' => $validated['description'],
+                'user_id' => auth()->user()->id,
+            ]);
 
-        return redirect()->back();
+            \Log::info('Report Created Successfully', [
+                'report_id' => $report->id,
+                'user_id' => $report->user_id,
+                'quiz_id' => $report->quiz_id,
+                'description' => $report->description
+            ]);
+
+            return Inertia::location(route('home'));
+        } catch (\Exception $e) {
+            \Log::error('Report Creation Failed', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return redirect()->back()->with('error', 'Failed to submit report');
+        }
     }
 
     /**
@@ -44,6 +67,6 @@ class ReportController extends Controller
     {
         $report->delete();
 
-        return redirect()->back();
+        return back()->with('success', 'Report removed successfully');
     }
 }

@@ -12,51 +12,41 @@ use App\Models\Quiz;
 use App\Models\Answer;
 use App\Models\Discussion;
 use App\Models\DiscussionComment;
+use App\Models\Report;
 
 class PagesController extends Controller
 {
-    // public function home(Request $request)
+
     public function home()
     {
-        // $search = $request->input('search');
-        // $type = $request->input('type');
         $search = request('search');
         $type = request('type');
 
-        // $quizzes = $request->user()->quizzes()
-        //     ->with(['category', 'subject'])
-        //     ->where('title', 'LIKE', "%$search%")
-        //     ->latest()
-        //     ->paginate(10);
+        $statistics = [
+            'quizzes' => request()->user()->quizzes()->count() ?? 0,
+            'threads' => request()->user()->threads()->count() ?? 0,
+            'comments' => request()->user()->comments()->count() ?? 0,
+            'average' => request()->user()->answers()->avg('score') ?? 0,
+        ];
 
-        // $statistics = [
-        //     'quizzes' => $request->user()->quizzes()->count(),
-        //     'threads' => $request->user()->threads()->count(),
-        //     'comments' => $request->user()->comments()->count(),
-        //     'average' => $request->user()->answers()->avg('score'),
-        // ];
+        $pendingReports = [];
 
-        // return Inertia::render('Home', [
-        //     'statistics' => $statistics,
-        //     'quizzes' => $quizzes,
-        //     'subject' => Subject::first(),
-        // ]);
+        if (auth()->user()->role == 2) {
+
+            $pendingReports = Report::with(['quiz', 'user'])->get();
+
+            \Log::info('Fetched Pending Reports Count:', [$pendingReports->count()]);
+        }
 
         return Inertia::render('Home', [
-            'statistics' => [
-                'quizzes' => request()->user()->quizzes()->count() ?? 0,
-                'threads' => request()->user()->threads()->count() ?? 0,
-                'comments' => request()->user()->comments()->count() ?? 0,
-                'average' => request()->user()->answers()->avg('score') ?? 0,
-            ],
-
+            'statistics' => $statistics,
             'quizzes' => request()->user()->quizzes()
                 ->with(['category', 'subject'])
                 ->where('title', 'LIKE', "%$search%")
                 ->orderBy('created_at', 'DESC')
                 ->paginate(10),
-
-                'subject' => Subject::first(),
+            'subject' => Subject::first(),
+            'pendingReports' => $pendingReports,
         ]);
     }
 

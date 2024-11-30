@@ -59,9 +59,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/subjects/{subject}/quizzes/{quiz}/destroy', [QuizController::class, 'destroy'])->name('quiz.destroy');
 
     Route::resource('subjects.quizzes.reports', ReportController::class);
+    Route::delete('reports/{report}', [ReportController::class, 'destroy'])->name('reports.destroy');
+
     Route::resource('subjects.quizzes.questions', QuestionController::class);
     Route::resource('subjects.quizzes.questions.answers', AnswerController::class);
-
 
     Route::resource('threads', ThreadController::class);
     // Route::resource('threads.comments', CommentController::class); 

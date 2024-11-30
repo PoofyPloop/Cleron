@@ -101,16 +101,92 @@ class QuizController extends Controller
         return redirect()->route('subjects.quizzes.complete', [$subject, $quiz]);
     }
 
+    // public function complete(Request $request, Subject $subject, Quiz $quiz)
+    // {
+
+    //     return Inertia::render('Quiz/Complete', [
+    //         'quiz' => $quiz->append('score'),
+    //         'questions' => $quiz->questions->each(function ($question) {
+    //             $question->append('answer');
+    //         })
+    //     ]);
+    // }
+
     public function complete(Request $request, Subject $subject, Quiz $quiz)
     {
+        $questions = $quiz->questions->map(function ($question) {
+            $answer = $question->answers()
+                ->where('user_id', auth()->id())
+                ->latest()
+                ->first();
+                
+            $question->answer = $answer;
+            return $question;
+        });
 
         return Inertia::render('Quiz/Complete', [
             'quiz' => $quiz->append('score'),
-            'questions' => $quiz->questions->each(function ($question) {
-                $question->append('answer');
-            })
+            'subject' => $subject,
+            'questions' => $questions
         ]);
     }
+    
+    // public function submit(Request $request, Subject $subject, Quiz $quiz)
+    // {
+    //     $validated = $request->validate([
+    //         'questions' => 'required|array',
+    //         'questions.*.id' => 'required|exists:questions,id',
+    //         'questions.*.user_answer' => 'required|string',
+    //     ]);
+
+    //     // Begin a DB transaction to ensure consistency
+    //     DB::transaction(function () use ($request, $validated, $quiz) {
+    //         collect($validated['questions'])->each(function ($question) use ($request) {
+
+    //             // Find the current question
+    //             $currentQuestion = Question::find($question['id']);
+
+    //             // Determine if the user answer is correct
+    //             $isCorrect = $question['user_answer'] == $currentQuestion->value;
+
+    //             // Update or create an answer record
+    //             $currentQuestion->answers()->updateOrCreate([
+    //                 'user_id' => $request->user()->id,
+    //             ], [
+    //                 'score' => $isCorrect ? $currentQuestion->points : 0,
+    //                 'value' => $question['user_answer'],
+    //             ]);
+    //         });
+    //     });
+
+    //     // Mark the quiz as ended
+    //     $quiz->update([
+    //         'ended_at' => now()
+    //     ]);
+
+    //     // Redirect to the complete page
+    //     return redirect()->route('subjects.quizzes.complete', [$subject, $quiz]);
+    // }
+
+    // public function complete(Request $request, Subject $subject, Quiz $quiz)
+    // {
+    //     // Load the quiz with questions and the user's answers
+    //     $quiz->load(['questions.answers' => function ($query) use ($request) {
+    //         // Only fetch answers for the logged-in user
+    //         $query->where('user_id', $request->user()->id);
+    //     }]);
+
+    //     // Append the 'score' attribute to the quiz
+    //     $quiz->append('score'); 
+
+    //     // Return the quiz and questions data to the frontend
+    //     return Inertia::render('Quiz/Complete', [
+    //         'quiz' => $quiz,
+    //         'questions' => $quiz->questions, // Pass the questions with answers for the current user
+    //     ]);
+    // }
+
+
 
     /**
      * Display the specified resource.
